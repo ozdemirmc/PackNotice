@@ -3,17 +3,31 @@
  * Ported from VSTO C# implementation.
  */
 
-let currentSettings = window.PackSettings.get();
+// Debugging log
+console.log("PackMaillerWEB: Script loading...");
+
+// Check if settings are available
+if (!window.PackSettings) {
+    console.error("PackMaillerWEB: settings.js not loaded or PackSettings missing!");
+}
+
+let currentSettings = window.PackSettings ? window.PackSettings.get() : { zimmetMode: 'BIRIM' };
 
 // Office context initialization
-Office.onReady((info) => {
-    if (info.host === Office.Host.Outlook) {
+if (typeof Office !== 'undefined') {
+    Office.onReady((info) => {
+        console.log("PackMaillerWEB: Office.js ready.", info);
         initApp();
+    });
+} else {
+    console.warn("PackMaillerWEB: Office.js not detected, running in standalone mode.");
+    // Wait for DOM to be sure
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
     } else {
-        // For browser testing
         initApp();
     }
-});
+}
 
 function initApp() {
     // UI Elements
@@ -74,10 +88,17 @@ function initApp() {
     };
 
     // Initialize UI
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('dateInput').value = today;
-    applyZimmetMode();
-    updatePreview();
+    try {
+        const today = new Date().toISOString().split('T')[0];
+        const dateInput = document.getElementById('dateInput');
+        if (dateInput) dateInput.value = today;
+
+        applyZimmetMode();
+        updatePreview();
+        console.log("PackMaillerWEB: Initialization complete.");
+    } catch (err) {
+        console.error("PackMaillerWEB: Error during UI init", err);
+    }
 }
 
 function handleTypeChange(type) {
