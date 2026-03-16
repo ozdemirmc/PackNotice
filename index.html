@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pack Mailler WEB</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+<body class="ms-font-m ms-welcome">
+    <div id="container" class="container">
+        <header class="header">
+            <h1 class="ms-font-xl">Pack Mailler</h1>
+            <button id="btnSettings" class="icon-button" title="Ayarlar">⚙️</button>
+        </header>
+
+        <main class="main-content">
+            <!-- BAY Selection -->
+            <section class="section">
+                <label class="section-title">BAY SEÇİMİ</label>
+                <div class="radio-group">
+                    <label class="radio-container">
+                        <input type="radio" name="bay" value="BAY-1" checked>
+                        <span class="radio-label">BAY-1</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="bay" value="BAY-2">
+                        <span class="radio-label">BAY-2</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="bay" value="BAY-3">
+                        <span class="radio-label">BAY-3</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Maintenance Type -->
+            <section class="section">
+                <label class="section-title">BAKIM TİPİ</label>
+                <div class="radio-stack">
+                    <label class="radio-container">
+                        <input type="radio" name="type" value="planned" checked>
+                        <span class="radio-label">BAKIM PLANI VAR</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="type" value="unplanned">
+                        <span class="radio-label">BAKIM PLANI YOK</span>
+                    </label>
+                    <label class="radio-container">
+                        <input type="radio" name="type" value="periodic">
+                        <span class="radio-label">PERİYODİK BAKIM PAKETİ</span>
+                    </label>
+                </div>
+            </section>
+
+            <!-- Inputs -->
+            <section class="section">
+                <div class="input-field">
+                    <input type="text" id="txtAc" placeholder=" " required>
+                    <label for="txtAc">UÇAK (A/C)</label>
+                </div>
+                <div class="input-field">
+                    <input type="text" id="txtBakim" placeholder=" " required>
+                    <label for="txtBakim">BAKIM ADI</label>
+                </div>
+                <div class="input-field">
+                    <input type="date" id="dateInput" placeholder=" ">
+                    <label for="dateInput">BAKIM GİRİŞ TARİHİ</label>
+                </div>
+            </section>
+
+            <!-- Zimmet/Skill Section -->
+            <section id="skillSection" class="section">
+                <label class="section-title">ZİMMET / SKILL SEÇİMİ</label>
+                <div id="skillGrid" class="checkbox-grid">
+                    <label class="check-container"><input type="checkbox" id="chk30" checked><span>30-MEKANİK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk35" checked><span>35-KABİN İÇİ</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk40" checked><span>40-AVİYONİK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk51" checked><span>51-YAPISAL</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk52" checked><span>52-BOYA</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk53" checked><span>53-KOLTUK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk98" checked><span>98-BOROSKOP</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk99" checked><span>99-NDT</span></label>
+                </div>
+                <div id="plannerNote" class="info-note hidden">
+                    Zimmet modu <strong>PLANNER</strong> olarak ayarlandığı için SKILL seçimi devre dışıdır.
+                </div>
+            </section>
+
+            <!-- Actions -->
+            <section class="actions">
+                <button id="btnPrepare" class="primary-button">MAİL HAZIRLA</button>
+            </section>
+
+            <!-- Preview -->
+            <section class="section preview-section">
+                <label class="section-title">ÖN İZLEME</label>
+                <div id="mailPreview" class="preview-box">
+                    <!-- HTML Preview Injection -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Settings Modal/Overlay (Hidden by default) -->
+        <div id="settingsOverlay" class="overlay hidden">
+            <div class="modal">
+                <header class="modal-header">
+                    <h2>Ayarlar</h2>
+                    <button id="btnCloseSettings" class="close-button">✕</button>
+                </header>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <label>Zimmet Modu</label>
+                        <select id="selZimmetMode">
+                            <option value="BIRIM">BİRİM</option>
+                            <option value="PLANNER">PLANNER</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>TO Adresleri (Virgül ile ayırın)</label>
+                        <textarea id="txtToBay1" placeholder="BAY-1 TO"></textarea>
+                        <textarea id="txtToBay2" placeholder="BAY-2 TO"></textarea>
+                        <textarea id="txtToBay3" placeholder="BAY-3 TO"></textarea>
+                    </div>
+                    <div class="setting-item">
+                        <label>CC Adresleri</label>
+                        <textarea id="txtCc" placeholder="Ortak CC Listesi"></textarea>
+                    </div>
+                </div>
+                <footer class="modal-footer">
+                    <button id="btnSaveSettings" class="primary-button">Kaydet</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <script src="settings.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
