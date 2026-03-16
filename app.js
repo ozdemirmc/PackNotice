@@ -19,12 +19,15 @@ function startApp() {
     initApp();
 }
 
+// Office context initialization
 if (typeof Office !== 'undefined') {
     Office.onReady(function (info) {
         console.log("PackMaillerWEB: Office.js ready check.");
-        // info.host is safer to check than Office.Host directly
         if (info && info.host) {
             console.log("PackMaillerWEB: Running inside host: " + info.host);
+            // Continuous check for From address in Outlook
+            checkFromAddress();
+            setInterval(checkFromAddress, 5000);
         } else {
             console.log("PackMaillerWEB: Running in standalone browser mode.");
         }
@@ -39,6 +42,37 @@ if (typeof Office !== 'undefined') {
         document.addEventListener('DOMContentLoaded', startApp);
     } else {
         startApp();
+    }
+}
+
+async function checkFromAddress() {
+    try {
+        if (typeof Office === 'undefined' || !Office.context || !Office.context.mailbox || !Office.context.mailbox.item) return;
+
+        const item = Office.context.mailbox.item;
+        const targetAddress = "TTUBBSAWPAKETHAZIRLIK@THY.COM";
+
+        if (item.from && typeof item.from.getAsync === 'function') {
+            item.from.getAsync(function (result) {
+                if (result.status === Office.AsyncResultStatus.Succeeded) {
+                    const currentFrom = (result.value.emailAddress || "").toUpperCase();
+                    const warningBar = document.getElementById('warningBar');
+                    const container = document.getElementById('container');
+
+                    if (warningBar && container) {
+                        if (currentFrom !== targetAddress) {
+                            warningBar.classList.remove('hidden');
+                            container.classList.add('has-warning');
+                        } else {
+                            warningBar.classList.add('hidden');
+                            container.classList.remove('has-warning');
+                        }
+                    }
+                }
+            });
+        }
+    } catch (err) {
+        console.warn("PackMaillerWEB: From address check failed", err);
     }
 }
 
@@ -73,32 +107,45 @@ function initApp() {
     });
 
     // Main Actions
-    btnPrepare.onclick = prepareMail;
+    if (btnPrepare) {
+        btnPrepare.onclick = function () {
+            console.log("PackMaillerWEB: Hazırla butonu tıklandı.");
+            prepareMail();
+        };
+    }
 
     // Settings Modal Actions
-    btnSettings.onclick = () => {
-        loadSettingsToUI();
-        settingsOverlay.classList.remove('hidden');
-    };
-
-    btnCloseSettings.onclick = () => {
-        settingsOverlay.classList.add('hidden');
-    };
-
-    btnSaveSettings.onclick = () => {
-        const newSettings = {
-            zimmetMode: document.getElementById('selZimmetMode').value,
-            bay1To: document.getElementById('txtToBay1').value,
-            bay2To: document.getElementById('txtToBay2').value,
-            bay3To: document.getElementById('txtToBay3').value,
-            cc: document.getElementById('txtCc').value
+    if (btnSettings) {
+        btnSettings.onclick = function () {
+            console.log("PackMaillerWEB: Ayarlar butonu tıklandı.");
+            loadSettingsToUI();
+            if (settingsOverlay) settingsOverlay.classList.remove('hidden');
         };
-        window.PackSettings.save(newSettings);
-        currentSettings = newSettings;
-        settingsOverlay.classList.add('hidden');
-        applyZimmetMode();
-        updatePreview();
-    };
+    }
+
+    if (btnCloseSettings) {
+        btnCloseSettings.onclick = function () {
+            if (settingsOverlay) settingsOverlay.classList.add('hidden');
+        };
+    }
+
+    if (btnSaveSettings) {
+        btnSaveSettings.onclick = function () {
+            console.log("PackMaillerWEB: Ayarlar kaydediliyor.");
+            const newSettings = {
+                zimmetMode: document.getElementById('selZimmetMode').value,
+                bay1To: document.getElementById('txtToBay1').value,
+                bay2To: document.getElementById('txtToBay2').value,
+                bay3To: document.getElementById('txtToBay3').value,
+                cc: document.getElementById('txtCc').value
+            };
+            window.PackSettings.save(newSettings);
+            currentSettings = newSettings;
+            if (settingsOverlay) settingsOverlay.classList.add('hidden');
+            applyZimmetMode();
+            updatePreview();
+        };
+    }
 
     // Initialize UI
     try {
@@ -108,9 +155,9 @@ function initApp() {
 
         applyZimmetMode();
         updatePreview();
-        console.log("PackMaillerWEB: Initialization complete.");
+        console.log("PackMaillerWEB: UI Hazır.");
     } catch (err) {
-        console.error("PackMaillerWEB: Error during UI init", err);
+        console.error("PackMaillerWEB: UI başlatılırken hata oluştu", err);
     }
 }
 
@@ -157,11 +204,55 @@ function applyZimmetMode() {
 function loadSettingsToUI() {
     const s = currentSettings;
     document.getElementById('selZimmetMode').value = s.zimmetMode;
-    document.getElementById('txtToBay1').value = s.bay1To;
-    document.getElementById('txtToBay2').value = s.bay2To;
-    document.getElementById('txtToBay3').value = s.bay3To;
-    document.getElementById('txtCc').value = s.cc;
+    renderEmailList('bay1To', 'listBay1');
+    renderEmailList('bay2To', 'listBay2');
+    renderEmailList('bay3To', 'listBay3');
+    renderEmailList('cc', 'listCc');
 }
+
+function renderEmailList(settingKey, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    container.innerHTML = '';
+    const list = currentSettings[settingKey] || [];
+
+    list.forEach((email, index) => {
+        const tag = document.createElement('div');
+        tag.className = 'email-tag';
+        tag.innerHTML = `
+            <span>${email}</span>
+            <span class="remove-tag" onclick="removeEmail('${settingKey}', ${index}, '${containerId}')">✕</span>
+        `;
+        container.appendChild(tag);
+    });
+}
+
+window.addEmailFromUI = function (settingKey, inputId) {
+    const input = document.getElementById(inputId);
+    const email = input.value.trim().toLowerCase();
+
+    if (!email || !email.includes('@')) {
+        alert("Geçersiz e-posta adresi!");
+        return;
+    }
+
+    if (!currentSettings[settingKey]) currentSettings[settingKey] = [];
+
+    if (currentSettings[settingKey].includes(email)) {
+        alert("Bu adres zaten listede!");
+        return;
+    }
+
+    currentSettings[settingKey].push(email);
+    input.value = '';
+    renderEmailList(settingKey, inputId.replace('in', 'list'));
+};
+
+window.removeEmail = function (settingKey, index, containerId) {
+    currentSettings[settingKey].splice(index, 1);
+    renderEmailList(settingKey, containerId);
+};
 
 function generateHTML() {
     const bay = document.querySelector('input[name="bay"]:checked').value;
@@ -258,8 +349,14 @@ function generateHTML() {
 }
 
 function updatePreview() {
-    const preview = document.getElementById('mailPreview');
-    preview.innerHTML = generateHTML();
+    try {
+        const preview = document.getElementById('mailPreview');
+        if (preview) {
+            preview.innerHTML = generateHTML();
+        }
+    } catch (err) {
+        console.error("PackMaillerWEB: Önizleme güncellenemedi", err);
+    }
 }
 
 async function prepareMail() {
@@ -278,6 +375,9 @@ async function prepareMail() {
     const toRecipients = bay === 'BAY-1' ? currentSettings.bay1To : bay === 'BAY-2' ? currentSettings.bay2To : currentSettings.bay3To;
     const ccRecipients = currentSettings.cc;
 
+    const toStr = Array.isArray(toRecipients) ? toRecipients.join(', ') : toRecipients;
+    const ccStr = Array.isArray(ccRecipients) ? ccRecipients.join(', ') : ccRecipients;
+
     try {
         // Office.js Calls to set subject, body, to, cc
         // Using Office.context.mailbox.item
@@ -289,8 +389,8 @@ async function prepareMail() {
         }
 
         item.subject.setAsync(subject);
-        item.to.setAsync(toRecipients.split(',').map(e => e.trim()));
-        item.cc.setAsync(ccRecipients.split(',').map(e => e.trim()));
+        item.to.setAsync(toRecipients); // Office.js accepts arrays
+        item.cc.setAsync(ccRecipients);
         item.body.setAsync(body, { coercionType: Office.CoercionType.Html });
 
         console.log("Mail prepared successfully!");

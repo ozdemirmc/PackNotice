@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,8 +9,18 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
 </head>
+
 <body class="ms-font-m ms-welcome">
     <div id="container" class="container">
+        <!-- From Address Warning Bar -->
+        <div id="warningBar" class="warning-bar hidden">
+            <span class="warning-bar-icon">⚠️</span>
+            <div class="warning-bar-text">
+                <strong>YANLIŞ GÖNDEREN HESABI!</strong><br>
+                Lütfen 'Kimden' kısmından <em>TT-UBB(SAW)-BAKIMHAZIRLIK</em> hesabını seçin.
+            </div>
+        </div>
+
         <header class="header">
             <h1>Pack Mailler WEB</h1>
             <button id="btnSettings" class="icon-button" title="Ayarlar">⚙️</button>
@@ -74,13 +85,20 @@
             <section id="skillSection" class="section">
                 <label class="section-title">ZİMMET / SKILL SEÇİMİ</label>
                 <div id="skillGrid" class="checkbox-grid">
-                    <label class="check-container"><input type="checkbox" id="chk30" checked><span>30-MEKANİK</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk35" checked><span>35-KABİN İÇİ</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk40" checked><span>40-AVİYONİK</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk51" checked><span>51-YAPISAL</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk52" checked><span>52-BOYA</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk53" checked><span>53-KOLTUK</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk98" checked><span>98-BOROSKOP</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk30"
+                            checked><span>30-MEKANİK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk35" checked><span>35-KABİN
+                            İÇİ</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk40"
+                            checked><span>40-AVİYONİK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk51"
+                            checked><span>51-YAPISAL</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk52"
+                            checked><span>52-BOYA</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk53"
+                            checked><span>53-KOLTUK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk98"
+                            checked><span>98-BOROSKOP</span></label>
                     <label class="check-container"><input type="checkbox" id="chk99" checked><span>99-NDT</span></label>
                 </div>
                 <div id="plannerNote" class="info-note hidden">
@@ -118,14 +136,36 @@
                         </select>
                     </div>
                     <div class="setting-item">
-                        <label>TO Adresleri (Virgül ile ayırın)</label>
-                        <textarea id="txtToBay1" placeholder="BAY-1 TO"></textarea>
-                        <textarea id="txtToBay2" placeholder="BAY-2 TO"></textarea>
-                        <textarea id="txtToBay3" placeholder="BAY-3 TO"></textarea>
+                        <label>EYALET - 1 (TO)</label>
+                        <div id="listBay1" class="email-list-container"></div>
+                        <div class="email-list-input-container">
+                            <input type="email" id="inBay1" placeholder="E-posta adresi...">
+                            <button class="btn-add-email" onclick="addEmailFromUI('bay1To', 'inBay1')">Ekle</button>
+                        </div>
                     </div>
                     <div class="setting-item">
-                        <label>CC Adresleri</label>
-                        <textarea id="txtCc" placeholder="Ortak CC Listesi"></textarea>
+                        <label>EYALET - 2 (TO)</label>
+                        <div id="listBay2" class="email-list-container"></div>
+                        <div class="email-list-input-container">
+                            <input type="email" id="inBay2" placeholder="E-posta adresi...">
+                            <button class="btn-add-email" onclick="addEmailFromUI('bay2To', 'inBay2')">Ekle</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>EYALET - 3 (TO)</label>
+                        <div id="listBay3" class="email-list-container"></div>
+                        <div class="email-list-input-container">
+                            <input type="email" id="inBay3" placeholder="E-posta adresi...">
+                            <button class="btn-add-email" onclick="addEmailFromUI('bay3To', 'inBay3')">Ekle</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <label>ORTAK CC LİSTESİ</label>
+                        <div id="listCc" class="email-list-container"></div>
+                        <div class="email-list-input-container">
+                            <input type="email" id="inCc" placeholder="E-posta adresi...">
+                            <button class="btn-add-email" onclick="addEmailFromUI('cc', 'inCc')">Ekle</button>
+                        </div>
                     </div>
                 </div>
                 <footer class="modal-footer">
@@ -138,4 +178,5 @@
     <script src="settings.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

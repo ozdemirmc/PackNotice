@@ -28,10 +28,53 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    padding-top: 64px; /* Space for fixed header */
+    padding-top: 64px;
+    /* Space for fixed header */
+    transition: padding 0.3s;
 }
 
-/* Fixed Modern Header */
+.container.has-warning {
+    padding-top: 110px;
+    /* Extra space for warning bar */
+}
+
+/* From-Address Warning Bar */
+.warning-bar {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    right: 0;
+    background: #fef2f2;
+    border-bottom: 2px solid var(--thy-red);
+    color: var(--thy-red);
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideDown 0.3s ease-out;
+}
+
+.warning-bar.hidden {
+    display: none !important;
+}
+
+.warning-bar-icon {
+    font-size: 1.2rem;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
 .header {
     position: fixed;
     top: 0;
@@ -69,7 +112,7 @@ body {
 
 .header .icon-button:hover {
     opacity: 1;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 /* Premium Card Design */
@@ -95,14 +138,18 @@ body {
 }
 
 /* Modern Controls */
-.radio-group, .radio-stack {
+.radio-group,
+.radio-stack {
     display: flex;
     gap: 10px;
 }
 
-.radio-stack { flex-direction: column; }
+.radio-stack {
+    flex-direction: column;
+}
 
-.radio-container, .check-container {
+.radio-container,
+.check-container {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -116,7 +163,8 @@ body {
     user-select: none;
 }
 
-.radio-container:hover, .check-container:hover {
+.radio-container:hover,
+.check-container:hover {
     background-color: #f8fafc;
     border-color: var(--thy-red);
 }
@@ -128,20 +176,22 @@ body {
     box-shadow: 0 0 0 1px var(--thy-red);
 }
 
-.radio-container input, .check-container input {
+.radio-container input,
+.check-container input {
     accent-color: var(--thy-red);
     width: 18px;
     height: 18px;
     margin: 0;
 }
 
-.radio-label, .check-container span {
+.radio-label,
+.check-container span {
     font-weight: 500;
     color: var(--text-secondary);
 }
 
-.radio-container input:checked + .radio-label,
-.check-container input:checked + span {
+.radio-container input:checked+.radio-label,
+.check-container input:checked+span {
     color: var(--thy-red);
     font-weight: 700;
 }
@@ -222,6 +272,66 @@ body {
     transform: translateY(0);
 }
 
+/* Email List Management (Tags/Pills) */
+.email-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    background: #f8fafc;
+    min-height: 48px;
+}
+
+.email-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--thy-blue);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.email-tag .remove-tag {
+    cursor: pointer;
+    font-weight: 800;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.email-tag .remove-tag:hover {
+    opacity: 1;
+}
+
+.email-list-input-container {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.email-list-input-container input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
+
+.btn-add-email {
+    padding: 8px 16px;
+    background: var(--thy-blue);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
 /* Preview Box */
 .preview-section {
     background: #fff;
@@ -280,7 +390,7 @@ body {
 }
 
 .close-button {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
     font-size: 1.2rem;
@@ -311,7 +421,8 @@ body {
     text-transform: uppercase;
 }
 
-.setting-item select, .setting-item textarea {
+.setting-item select,
+.setting-item textarea {
     width: 100%;
     border-radius: 12px;
     border: 1px solid var(--border-light);
@@ -326,7 +437,9 @@ body {
     resize: vertical;
 }
 
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 .info-note {
     font-size: 0.85rem;
@@ -339,16 +452,37 @@ body {
 
 /* Animations */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .section {
     animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.section:nth-child(1) { animation-delay: 0.1s; }
-.section:nth-child(2) { animation-delay: 0.2s; }
-.section:nth-child(3) { animation-delay: 0.3s; }
-.section:nth-child(4) { animation-delay: 0.4s; }
-.section:nth-child(5) { animation-delay: 0.5s; }
+.section:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.section:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.section:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.section:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.section:nth-child(5) {
+    animation-delay: 0.5s;
+}
