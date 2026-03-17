@@ -388,6 +388,16 @@ async function prepareMail() {
             return;
         }
 
+        // Auto-set FROM address
+        if (item.from && typeof item.from.setAsync === 'function') {
+            const fromAddress = { emailAddress: "TTUBBSAWPAKETHAZIRLIK@THY.COM" };
+            item.from.setAsync(fromAddress, function (asyncResult) {
+                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
+                    console.log("From (Kimden) hesabı otomatik ayarlanamadı: " + asyncResult.error.message);
+                }
+            });
+        }
+
         item.subject.setAsync(subject);
         item.to.setAsync(toRecipients); // Office.js accepts arrays
         item.cc.setAsync(ccRecipients);
