@@ -10,8 +10,8 @@
   <DefaultLocale>tr-TR</DefaultLocale>
   <DisplayName DefaultValue="Pack Mailler WEB" />
   <Description DefaultValue="Bakım paketleri için otomatik mail hazırlama aracı." />
-  <IconUrl DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/icon-32.png" />
-  <HighResolutionIconUrl DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/icon-64.png" />
+  <IconUrl DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
+  <HighResolutionIconUrl DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
   <SupportUrl DefaultValue="https://www.turkishairlines.com" />
   <AppDomains>
     <AppDomain>https://ozdemirmc.github.io/PackMaillerWEB</AppDomain>
@@ -73,9 +73,9 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="icon16" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/icon-16.png" />
-        <bt:Image id="icon32" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/icon-32.png" />
-        <bt:Image id="icon80" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/icon-80.png" />
+        <bt:Image id="icon16" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
+        <bt:Image id="icon32" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
+        <bt:Image id="icon80" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
       </bt:Images>
       <bt:Urls>
         <bt:Url id="taskpaneUrl" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/index.html" />
