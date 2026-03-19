@@ -89,6 +89,15 @@ function initApp() {
     const btnCloseSettings = document.getElementById('btnCloseSettings');
     const btnSaveSettings = document.getElementById('btnSaveSettings');
     const settingsOverlay = document.getElementById('settingsOverlay');
+    const alertOverlay = document.getElementById('alertOverlay');
+    const btnAlertOk = document.getElementById('btnAlertOk');
+
+    // Uyarı modali kapatma
+    if (btnAlertOk) {
+        btnAlertOk.onclick = () => {
+            if (alertOverlay) alertOverlay.classList.add('hidden');
+        };
+    }
 
     // Email inputs - Add Enter key listener
     ['inBay1', 'inBay2', 'inBay3', 'inCc'].forEach(id => {
@@ -354,56 +363,81 @@ function updatePreview() {
     }
 }
 
+// Sayfa içi uyarı modali (alert() Office taskpane'de çalışmadığı için)
+function showAlert(message) {
+    const overlay = document.getElementById('alertOverlay');
+    const msgEl = document.getElementById('alertMessage');
+    if (overlay && msgEl) {
+        msgEl.innerHTML = message;
+        overlay.classList.remove('hidden');
+    } else {
+        // Fallback: konsola yaz
+        console.error("PackMaillerWEB UYARI:", message);
+    }
+}
+
 async function prepareMail() {
     const ac = document.getElementById('txtAc').value.toUpperCase().trim();
     const bakim = document.getElementById('txtBakim').value.toUpperCase().trim();
 
     if (!ac || !bakim) {
-        alert("A/C ve BAKIM ADI alanları boş bırakılamaz!");
+        showAlert("A/C ve BAKIM ADI alanları boş bırakılamaz!");
+        return;
+    }
+
+    // Office konteksti yoksa engelle
+    if (typeof Office === 'undefined' || !Office.context || !Office.context.mailbox || !Office.context.mailbox.item) {
+        console.warn("PackMaillerWEB: Office context not available.");
+        showAlert("Outlook bağlantısı kurulamadı.<br>Eklentiyi Outlook içinden açtığınızdan emin olun.");
         return;
     }
 
     const item = Office.context.mailbox.item;
-    if (!item) {
-        console.warn("Item not found (might be in browser simulation)");
+
+    // from.getAsync yoksa da engelle
+    if (!item.from || typeof item.from.getAsync !== 'function') {
+        console.warn("PackMaillerWEB: item.from.getAsync not available.");
+        showAlert(
+            "<b>Gönderici adresi kontrol edilemiyor.</b><br><br>" +
+            "Lütfen mailin <b>'Kimden' (From)</b> alanından<br>" +
+            "<b style='color: var(--accent);'>TT-UBB(SAW)-BAKIMHAZIRLIK</b><br>" +
+            "hesabının seçili olduğundan emin olun."
+        );
         return;
     }
 
-    // Gönderici adresi kontrolü - yanlışsa engelle
-    if (item.from && typeof item.from.getAsync === 'function') {
-        item.from.getAsync(function (result) {
-            if (result.status === Office.AsyncResultStatus.Succeeded) {
-                const currentFrom = (result.value.emailAddress || "").toUpperCase();
-                
-                if (currentFrom !== targetAddress) {
-                    // Gönderici adresi yanlış - mail hazırlamayı engelle
-                    alert(
-                        "⚠️ GÖNDERİCİ ADRESİ YANLIŞ!\n\n" +
-                        "Mail hazırlanamaz.\n\n" +
-                        "Lütfen mailin 'Kimden' (From) alanından\n" +
-                        "'TT-UBB(SAW)-BAKIMHAZIRLIK' hesabını seçin\n" +
-                        "ve tekrar deneyin."
-                    );
-                    console.warn("PackMaillerWEB: Preparation blocked - wrong sender: " + currentFrom);
-                    return;
-                }
-                
-                // Gönderici doğru - mail hazırla
-                executeMailPreparation();
-            } else {
-                // from.getAsync başarısız olursa da uyarı ver
-                alert(
-                    "⚠️ GÖNDERİCİ ADRESİ DOĞRULANAMADI!\n\n" +
-                    "Lütfen mailin 'Kimden' (From) alanından\n" +
-                    "'TT-UBB(SAW)-BAKIMHAZIRLIK' hesabının seçili olduğundan\n" +
-                    "emin olun ve tekrar deneyin."
+    // Gönderici adresi kontrolü
+    item.from.getAsync(function (result) {
+        if (result.status === Office.AsyncResultStatus.Succeeded) {
+            const currentFrom = (result.value.emailAddress || "").toUpperCase();
+            console.log("PackMaillerWEB: prepareMail check - current From:", currentFrom);
+
+            if (currentFrom !== targetAddress) {
+                // Gönderici adresi yanlış - mail hazırlamayı engelle
+                showAlert(
+                    "<b>GÖNDERİCİ ADRESİ YANLIŞ!</b><br><br>" +
+                    "Mail hazırlanamaz.<br><br>" +
+                    "Lütfen mailin <b>'Kimden' (From)</b> alanından<br>" +
+                    "<b style='color: var(--accent);'>TT-UBB(SAW)-BAKIMHAZIRLIK</b><br>" +
+                    "hesabını seçin ve tekrar deneyin."
                 );
-                console.error("PackMaillerWEB: from.getAsync failed:", result.error.message);
+                console.warn("PackMaillerWEB: Preparation blocked - wrong sender: " + currentFrom);
+                return;
             }
-        });
-    } else {
-        executeMailPreparation(); // Browser veya kısıtlı ortam
-    }
+
+            // Gönderici doğru - mail hazırla
+            executeMailPreparation();
+        } else {
+            // from.getAsync başarısız olursa da uyarı ver
+            showAlert(
+                "<b>GÖNDERİCİ ADRESİ DOĞRULANAMADI!</b><br><br>" +
+                "Lütfen mailin <b>'Kimden' (From)</b> alanından<br>" +
+                "<b style='color: var(--accent);'>TT-UBB(SAW)-BAKIMHAZIRLIK</b><br>" +
+                "hesabının seçili olduğundan emin olun."
+            );
+            console.error("PackMaillerWEB: from.getAsync failed:", result.error ? result.error.message : "unknown");
+        }
+    });
 }
 
 function executeMailPreparation() {
