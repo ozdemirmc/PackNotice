@@ -12,6 +12,9 @@ if (!window.PackSettings) {
 }
 
 let currentSettings = window.PackSettings ? window.PackSettings.get() : { zimmetMode: 'BIRIM' };
+let originalFrom = null; // To store the initial sender address
+let isProcessed = false; // Flag to skip revert if MAIL HAZIRLA was clicked
+const targetAddress = "TTUBBSAWPAKETHAZIRLIK@THY.COM";
 
 // Ultra-defensive Office initialization
 function startApp() {
@@ -25,9 +28,16 @@ if (typeof Office !== 'undefined') {
         console.log("PackMaillerWEB: Office.js ready check.");
         if (info && info.host) {
             console.log("PackMaillerWEB: Running inside host: " + info.host);
-            // Continuous check for From address in Outlook
+            
+            // 1. Store original From address and try to set the target address
+            handleInitialFromAddress();
+
+            // 2. Continuous check for From address in Outlook
             checkFromAddress();
             setInterval(checkFromAddress, 5000);
+
+            // 3. Revert on close (best-effort)
+            window.addEventListener('beforeunload', revertFromAddress);
         } else {
             console.log("PackMaillerWEB: Running in standalone browser mode.");
         }
@@ -45,12 +55,52 @@ if (typeof Office !== 'undefined') {
     }
 }
 
+async function handleInitialFromAddress() {
+    try {
+        const item = Office.context.mailbox.item;
+        if (!item || !item.from) return;
+
+        // Get original
+        item.from.getAsync(function (result) {
+            if (result.status === Office.AsyncResultStatus.Succeeded) {
+                originalFrom = result.value;
+                console.log("PackMaillerWEB: Original From saved:", originalFrom.emailAddress);
+
+                // Try to set target
+                if (originalFrom.emailAddress.toUpperCase() !== targetAddress) {
+                    item.from.setAsync({ emailAddress: targetAddress }, function (setResult) {
+                        if (setResult.status === Office.AsyncResultStatus.Succeeded) {
+                            console.log("PackMaillerWEB: Target From set automatically.");
+                        } else {
+                            console.warn("PackMaillerWEB: Auto-set From failed:", setResult.error.message);
+                        }
+                        checkFromAddress(); // Trigger UI update
+                    });
+                }
+            }
+        });
+    } catch (err) {
+        console.warn("PackMaillerWEB: Initial From handling failed", err);
+    }
+}
+
+function revertFromAddress() {
+    try {
+        if (!isProcessed && originalFrom && Office.context.mailbox.item && Office.context.mailbox.item.from) {
+            // Revert to original if it's different from current
+            Office.context.mailbox.item.from.setAsync({ emailAddress: originalFrom.emailAddress });
+            console.log("PackMaillerWEB: Reverted From address (cancelled state).");
+        }
+    } catch (err) {
+        // Silently fail as the pane is closing
+    }
+}
+
 async function checkFromAddress() {
     try {
         if (typeof Office === 'undefined' || !Office.context || !Office.context.mailbox || !Office.context.mailbox.item) return;
 
         const item = Office.context.mailbox.item;
-        const targetAddress = "TTUBBSAWPAKETHAZIRLIK@THY.COM";
 
         if (item.from && typeof item.from.getAsync === 'function') {
             item.from.getAsync(function (result) {
@@ -348,6 +398,7 @@ function updatePreview() {
 }
 
 async function prepareMail() {
+    isProcessed = true; // Mark as processed so we don't revert on close
     const ac = document.getElementById('txtAc').value.toUpperCase().trim();
     const bakim = document.getElementById('txtBakim').value.toUpperCase().trim();
 
@@ -378,8 +429,7 @@ async function prepareMail() {
 
         // Auto-set FROM address
         if (item.from && typeof item.from.setAsync === 'function') {
-            const fromAddress = { emailAddress: "TTUBBSAWPAKETHAZIRLIK@THY.COM" };
-            item.from.setAsync(fromAddress, function (asyncResult) {
+            item.from.setAsync({ emailAddress: targetAddress }, function (asyncResult) {
                 if (asyncResult.status === Office.AsyncResultStatus.Failed) {
                     alert("UYARI: Gönderen (Kimden) hesabı 'TTUBBSAWPAKETHAZIRLIK@THY.COM' olarak ayarlanamadı. Lütfen yetkilerinizi kontrol edip maili manuel gönderiniz.\n\nHata: " + asyncResult.error.message);
                     console.log("From (Kimden) hesabı otomatik ayarlanamadı: " + asyncResult.error.message);
