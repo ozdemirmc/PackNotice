@@ -12,8 +12,6 @@ if (!window.PackSettings) {
 }
 
 let currentSettings = window.PackSettings ? window.PackSettings.get() : { zimmetMode: 'BIRIM' };
-let originalFrom = null; // To store the initial sender address
-let isProcessed = false; // Flag to skip revert if MAIL HAZIRLA was clicked
 const targetAddress = "TTUBBSAWPAKETHAZIRLIK@THY.COM";
 
 // Ultra-defensive Office initialization
@@ -28,17 +26,10 @@ if (typeof Office !== 'undefined') {
         console.log("PackMaillerWEB: Office.js ready check.");
         if (info && info.host) {
             console.log("PackMaillerWEB: Running inside host: " + info.host);
-            
-            // 1. Store original From address and try to set the target address
-            // Use a small delay to ensure item is fully ready in some Outlook versions
-            setTimeout(handleInitialFromAddress, 500);
 
-            // 2. Continuous check for From address in Outlook
-            checkFromAddress();
+            // Gönderici adresini periyodik olarak kontrol et ve uyarı göster
+            setTimeout(checkFromAddress, 500);
             setInterval(checkFromAddress, 5000);
-
-            // 3. Revert on close (best-effort)
-            window.addEventListener('beforeunload', revertFromAddress);
         } else {
             console.log("PackMaillerWEB: Running in standalone browser mode.");
         }
@@ -56,77 +47,10 @@ if (typeof Office !== 'undefined') {
     }
 }
 
-async function handleInitialFromAddress() {
-    console.log("PackMaillerWEB: Initial From check started...");
-    try {
-        if (typeof Office === 'undefined' || !Office.context || !Office.context.mailbox || !Office.context.mailbox.item) {
-            console.warn("PackMaillerWEB: Office context not fully ready for From handling.");
-            return;
-        }
-
-        const item = Office.context.mailbox.item;
-        
-        // Check requirement set for from.setAsync (Mailbox 1.7)
-        if (!Office.context.requirements.isSetSupported('Mailbox', '1.7')) {
-            const msg = "Sistem desteklenmiyor (Mailbox 1.7+ gerekli).";
-            console.error("PackMaillerWEB: " + msg);
-            const errEl = document.getElementById('errorDetail');
-            if (errEl) errEl.innerText = msg;
-            checkFromAddress(); // Show warning since we can't auto-set
-            return;
-        }
-
-        if (!item.from) {
-            console.error("PackMaillerWEB: item.from is NOT available in this context.");
-            return;
-        }
-
-        // Get original From address
-        item.from.getAsync(function (result) {
-            if (result.status === Office.AsyncResultStatus.Succeeded) {
-                originalFrom = result.value;
-                const currentFromStr = (originalFrom.emailAddress || originalFrom).toUpperCase();
-                console.log("PackMaillerWEB: Current From is:", currentFromStr);
-
-                // Try to set target if different
-                if (currentFromStr !== targetAddress) {
-                    console.log("PackMaillerWEB: Trying to set From to:", targetAddress);
-                    item.from.setAsync([{ emailAddress: targetAddress }], function (setResult) {
-                        if (setResult.status === Office.AsyncResultStatus.Succeeded) {
-                            console.log("PackMaillerWEB: Target From set successfully.");
-                        } else {
-                            const errMsg = setResult.error.message;
-                            console.error("PackMaillerWEB: setAsync failed:", errMsg);
-                            const errEl = document.getElementById('errorDetail');
-                            if (errEl) errEl.innerText = "Hata: " + errMsg;
-                        }
-                        checkFromAddress(); // Update warning UI immediately
-                    });
-                } else {
-                    console.log("PackMaillerWEB: From address already matches target.");
-                    checkFromAddress();
-                }
-            } else {
-                console.error("PackMaillerWEB: getAsync failed:", result.error.message);
-                checkFromAddress();
-            }
-        });
-    } catch (err) {
-        console.warn("PackMaillerWEB: Error in handleInitialFromAddress", err);
-    }
-}
-
-function revertFromAddress() {
-    try {
-        if (!isProcessed && originalFrom && Office.context.mailbox.item && Office.context.mailbox.item.from) {
-            // Revert to original if it's different from current
-            Office.context.mailbox.item.from.setAsync({ emailAddress: originalFrom.emailAddress });
-            console.log("PackMaillerWEB: Reverted From address (cancelled state).");
-        }
-    } catch (err) {
-        // Silently fail as the pane is closing
-    }
-}
+// handleInitialFromAddress ve revertFromAddress kaldırıldı.
+// Office.js API'sinde from.setAsync() metodu bulunmadığından
+// gönderici adresi programatik olarak değiştirilemez.
+// Bunun yerine sadece uyarı gösteriliyor ve MAİL HAZIRLA engelleniyor.
 
 async function checkFromAddress() {
     try {
@@ -445,37 +369,44 @@ async function prepareMail() {
         return;
     }
 
-    // Strict FROM address verification
+    // Gönderici adresi kontrolü - yanlışsa engelle
     if (item.from && typeof item.from.getAsync === 'function') {
         item.from.getAsync(function (result) {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
                 const currentFrom = (result.value.emailAddress || "").toUpperCase();
                 
                 if (currentFrom !== targetAddress) {
-                    // Try to set it one last time
-                    item.from.setAsync([{ emailAddress: targetAddress }], function (setResult) {
-                        if (setResult.status === Office.AsyncResultStatus.Succeeded) {
-                            console.log("PackMaillerWEB: From address corrected just before preparation.");
-                            executeMailPreparation();
-                        } else {
-                            alert("DİKKAT: Gönderici adresi yanlış!\n\nLütfen 'Kimden' (From) kısmından 'TTUBBSAWPAKETHAZIRLIK@THY.COM' hesabını seçin.\n\nHata: " + setResult.error.message);
-                            console.error("PackMaillerWEB: Preparation blocked due to wrong sender.");
-                        }
-                    });
-                } else {
-                    executeMailPreparation();
+                    // Gönderici adresi yanlış - mail hazırlamayı engelle
+                    alert(
+                        "⚠️ GÖNDERİCİ ADRESİ YANLIŞ!\n\n" +
+                        "Mail hazırlanamaz.\n\n" +
+                        "Lütfen mailin 'Kimden' (From) alanından\n" +
+                        "'TT-UBB(SAW)-BAKIMHAZIRLIK' hesabını seçin\n" +
+                        "ve tekrar deneyin."
+                    );
+                    console.warn("PackMaillerWEB: Preparation blocked - wrong sender: " + currentFrom);
+                    return;
                 }
+                
+                // Gönderici doğru - mail hazırla
+                executeMailPreparation();
             } else {
-                executeMailPreparation(); // Fallback if get fails, let internal finalize handle context
+                // from.getAsync başarısız olursa da uyarı ver
+                alert(
+                    "⚠️ GÖNDERİCİ ADRESİ DOĞRULANAMADI!\n\n" +
+                    "Lütfen mailin 'Kimden' (From) alanından\n" +
+                    "'TT-UBB(SAW)-BAKIMHAZIRLIK' hesabının seçili olduğundan\n" +
+                    "emin olun ve tekrar deneyin."
+                );
+                console.error("PackMaillerWEB: from.getAsync failed:", result.error.message);
             }
         });
     } else {
-        executeMailPreparation(); // Browser or restricted mode
+        executeMailPreparation(); // Browser veya kısıtlı ortam
     }
 }
 
 function executeMailPreparation() {
-    isProcessed = true; // Mark as processed since we are actually preparing the mail
     const ac = document.getElementById('txtAc').value.toUpperCase().trim();
     const bakim = document.getElementById('txtBakim').value.toUpperCase().trim();
     const bay = document.querySelector('input[name="bay"]:checked').value;
