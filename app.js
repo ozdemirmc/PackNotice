@@ -430,7 +430,6 @@ function updatePreview() {
 }
 
 async function prepareMail() {
-    isProcessed = true; // Mark as processed so we don't revert on close
     const ac = document.getElementById('txtAc').value.toUpperCase().trim();
     const bakim = document.getElementById('txtBakim').value.toUpperCase().trim();
 
@@ -439,6 +438,45 @@ async function prepareMail() {
         return;
     }
 
+    const item = Office.context.mailbox.item;
+    if (!item) {
+        console.warn("Item not found (might be in browser simulation)");
+        return;
+    }
+
+    // Strict FROM address verification
+    if (item.from && typeof item.from.getAsync === 'function') {
+        item.from.getAsync(function (result) {
+            if (result.status === Office.AsyncResultStatus.Succeeded) {
+                const currentFrom = (result.value.emailAddress || "").toUpperCase();
+                
+                if (currentFrom !== targetAddress) {
+                    // Try to set it one last time
+                    item.from.setAsync({ emailAddress: targetAddress }, function (setResult) {
+                        if (setResult.status === Office.AsyncResultStatus.Succeeded) {
+                            console.log("PackMaillerWEB: From address corrected just before preparation.");
+                            executeMailPreparation();
+                        } else {
+                            alert("DİKKAT: Gönderici adresi yanlış!\n\nLütfen 'Kimden' (From) kısmından 'TTUBBSAWPAKETHAZIRLIK@THY.COM' hesabını seçin.\n\nHata: " + setResult.error.message);
+                            console.error("PackMaillerWEB: Preparation blocked due to wrong sender.");
+                        }
+                    });
+                } else {
+                    executeMailPreparation();
+                }
+            } else {
+                executeMailPreparation(); // Fallback if get fails, let internal finalize handle context
+            }
+        });
+    } else {
+        executeMailPreparation(); // Browser or restricted mode
+    }
+}
+
+function executeMailPreparation() {
+    isProcessed = true; // Mark as processed since we are actually preparing the mail
+    const ac = document.getElementById('txtAc').value.toUpperCase().trim();
+    const bakim = document.getElementById('txtBakim').value.toUpperCase().trim();
     const bay = document.querySelector('input[name="bay"]:checked').value;
     const subject = `${ac} / ${bakim} BAKIM PAKETİ HK.`;
     const body = generateHTML();
@@ -446,39 +484,8 @@ async function prepareMail() {
     const toRecipients = bay === 'BAY-1' ? currentSettings.bay1To : bay === 'BAY-2' ? currentSettings.bay2To : currentSettings.bay3To;
     const ccRecipients = currentSettings.cc;
 
-    const toStr = Array.isArray(toRecipients) ? toRecipients.join(', ') : toRecipients;
-    const ccStr = Array.isArray(ccRecipients) ? ccRecipients.join(', ') : ccRecipients;
-
-    try {
-        // Office.js Calls to set subject, body, to, cc
-        // Using Office.context.mailbox.item
-        const item = Office.context.mailbox.item;
-
-        if (!item) {
-            console.warn("Item not found (might be in browser simulation)");
-            return;
-        }
-
-        // Auto-set FROM address
-        if (item.from && typeof item.from.setAsync === 'function') {
-            item.from.setAsync({ emailAddress: targetAddress }, function (asyncResult) {
-                if (asyncResult.status === Office.AsyncResultStatus.Failed) {
-                    alert("UYARI: Gönderen (Kimden) hesabı 'TTUBBSAWPAKETHAZIRLIK@THY.COM' olarak ayarlanamadı. Lütfen yetkilerinizi kontrol edip maili manuel gönderiniz.\n\nHata: " + asyncResult.error.message);
-                    console.log("From (Kimden) hesabı otomatik ayarlanamadı: " + asyncResult.error.message);
-                    return; // Stop execution if we can't set the from address
-                } else {
-                    finalizeMailPreparation(item, subject, toRecipients, ccRecipients, body);
-                }
-            });
-        } else {
-             // Fallback if from API is totally unavailable, but still prepare the rest
-             finalizeMailPreparation(item, subject, toRecipients, ccRecipients, body);
-        }
-
-    } catch (error) {
-        console.error("Preparation failed", error);
-        alert("Mail hazırlanırken beklenmeyen bir hata oluştu.");
-    }
+    const item = Office.context.mailbox.item;
+    finalizeMailPreparation(item, subject, toRecipients, ccRecipients, body);
 }
 
 function finalizeMailPreparation(item, subject, toRecipients, ccRecipients, body) {
