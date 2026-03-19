@@ -20,7 +20,7 @@
             <section class="section">
                 <div style="display: flex; gap: 10px;">
                     <div style="flex: 1;">
-                        <label class="section-title">BAY</label>
+                        <label class="section-title"></label>
                         <div class="radio-group">
                             <label class="radio-container"><input type="radio" name="bay" value="BAY-1"
                                     checked><span>BAY-1</span></label>
@@ -34,7 +34,7 @@
             </section>
 
             <section class="section">
-                <label class="section-title">BAKIM TİPİ</label>
+                <label class="section-title"></label>
                 <div class="radio-stack">
                     <label class="radio-container"><input type="radio" name="type" value="planned" checked><span>PLANLI
                             BAKIM</span></label>
@@ -46,23 +46,31 @@
             </section>
 
             <section class="section">
-                <div class="input-field"><label>UÇAK (A/C)</label><input type="text" id="txtAc" placeholder="TC-LLL">
+                <div class="input-field"><label>UÇAK (A/C)</label><input type="text" id="txtAc" placeholder="TC-CHT">
                 </div>
                 <div class="input-field"><label>BAKIM ADI</label><input type="text" id="txtBakim" placeholder="A-CHECK">
                 </div>
-                <div class="input-field"><label>TARİH</label><input type="date" id="dateInput" lang="tr"></div>
+                <div class="input-field"><label>BAKIM GİRİŞ TARİHİ</label><input type="date" id="dateInput" lang="tr">
+                </div>
             </section>
 
             <section id="skillSection" class="section">
                 <label class="section-title">SKILL SEÇİMİ</label>
                 <div id="skillGrid" class="checkbox-grid">
-                    <label class="check-container"><input type="checkbox" id="chk30" checked><span>30-MEK</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk35" checked><span>35-KAB</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk40" checked><span>40-AVİ</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk51" checked><span>51-YAP</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk52" checked><span>52-BOY</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk53" checked><span>53-KOL</span></label>
-                    <label class="check-container"><input type="checkbox" id="chk98" checked><span>98-BOR</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk30"
+                            checked><span>30-MEKANİK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk35" checked><span>35-KABİN
+                            İÇİ</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk40"
+                            checked><span>40-AVİYONİK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk51"
+                            checked><span>51-YAPISAL</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk52"
+                            checked><span>52-BOYA</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk53"
+                            checked><span>53-KOLTUK</span></label>
+                    <label class="check-container"><input type="checkbox" id="chk98"
+                            checked><span>98-BOROSKOP</span></label>
                     <label class="check-container"><input type="checkbox" id="chk99" checked><span>99-NDT</span></label>
                 </div>
                 <div id="plannerNote" class="info-note hidden">PLANNER modu aktif.</div>

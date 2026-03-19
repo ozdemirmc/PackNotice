@@ -195,11 +195,7 @@ function initApp() {
         };
     }
 
-    // Initialize UI
-    const today = new Date().toISOString().split('T')[0];
-    const dateInput = document.getElementById('dateInput');
-    if (dateInput) dateInput.value = today;
-
+    // Initialize UI (tarih boş başlar)
     applyZimmetMode();
     updatePreview();
 }
