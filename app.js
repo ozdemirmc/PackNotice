@@ -294,7 +294,14 @@ function generateHTML() {
     const ac = document.getElementById('txtAc').value.toUpperCase();
     const bakim = document.getElementById('txtBakim').value.toUpperCase();
     const dateRaw = document.getElementById('dateInput').value;
-    const date = dateRaw ? new Date(dateRaw).toLocaleDateString('tr-TR') : '';
+    let date = '';
+    if (dateRaw) {
+        const d = new Date(dateRaw);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        date = `${day}.${month}.${year}`;
+    }
 
     const bakimPlaniText = typeValue === 'planned' ? 'VAR' : typeValue === 'periodic' ? 'PERİYODİK BAKIM' : 'YOK';
     const isPlanned = typeValue === 'planned';
@@ -400,7 +407,7 @@ function generateHTML() {
     html += `
                                 <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #d1d5db; font-size: 0.9em; color: #6c757d;">
                                     <strong>BAKIM PLANLAMA ŞEFLİĞİ (SAW)</strong><br>
-                                    BAKIM HAZIRLIK BİRİMİ
+                                    BAKIM HAZIRLIK BİRİMİ TARAFINDAN GELİŞTİRİLMİŞTİR
                                 </div>
                             </td>
                         </tr>
@@ -447,9 +454,10 @@ function showAlert(message, title) {
 async function prepareMail() {
     const ac = document.getElementById('txtAc').value.toUpperCase().trim();
     const bakim = document.getElementById('txtBakim').value.toUpperCase().trim();
+    const dateRaw = document.getElementById('dateInput').value;
 
-    if (!ac || !bakim) {
-        showAlert("<b style='color: var(--accent);'>A/C</b> VE <b style='color: var(--accent);'>BAKIM ADI</b> ALANLARI BOŞ BIRAKILAMAZ!");
+    if (!ac || !bakim || !dateRaw) {
+        showAlert("<b style='color: var(--accent);'>A/C</b>, <b style='color: var(--accent);'>BAKIM ADI</b> VE <b style='color: var(--accent);'>TARİH</b> ALANLARI BOŞ BIRAKILAMAZ!");
         return;
     }
 
