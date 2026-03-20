@@ -397,7 +397,7 @@ function generateHTML() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important;">&nbsp;</td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
         `;
@@ -412,7 +412,7 @@ function generateHTML() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important;">&nbsp;</td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
         `;
