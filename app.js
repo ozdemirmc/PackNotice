@@ -302,39 +302,49 @@ function generateHTML() {
     const isPlannerMode = currentSettings.zimmetMode === 'PLANNER';
 
     let html = `
-        <div style="font-family: 'Segoe UI', Tahoma, sans-serif; color: #000; line-height: 1.6;">
-            <p>Sayın İlgililer,</p>
-            <p>Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
-            
-            <div style="background-color: #f4f5f6; border-left: 4px solid #E2001A; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-                <strong>A/C:</strong> ${ac}<br>
-                <strong>BAKIM ADI:</strong> ${bakim}<br>
-                <strong>BAKIM GİRİŞ TARİHİ:</strong> ${date}<br>
-                <strong>BAKIM PLANI:</strong> ${bakimPlaniText}
-            </div>
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #fafafa;">
+            <tr>
+                <td align="center" style="padding: 20px;">
+                    <!--[if mso]>
+                    <table align="center" border="0" cellspacing="0" cellpadding="0" width="700" style="border: 1px solid #d1d5db; background-color: #ffffff;">
+                    <tr>
+                    <td align="left" valign="top" width="700" style="padding: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6;">
+                    <![endif]-->
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 700px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; background-color: #ffffff; margin: 0 auto;">
+                        <tr>
+                            <td style="padding: 20px;">
+                                <p style="margin-top: 0;">Sayın İlgililer,</p>
+                                <p>Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
+                                
+                                <div style="background-color: #f4f5f6; border-left: 4px solid #E2001A; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                                    <strong>A/C:</strong> ${ac}<br>
+                                    <strong>BAKIM ADI:</strong> ${bakim}<br>
+                                    <strong>BAKIM GİRİŞ TARİHİ:</strong> ${date}<br>
+                                    <strong>BAKIM PLANI:</strong> ${bakimPlaniText}
+                                </div>
     `;
 
     if (isPlannerMode) {
         html += `
-            <p>Kartların zimmetleneceği <strong>planner</strong> ismini bu e-posta yoluyla bildirmenizi rica ederiz.</p>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
-                <tr>
-                    <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #fff; text-align: left; width: 1%; white-space: nowrap;">PLANNER</th>
-                    <td style="border: 1px solid #d1d5db; padding: 12px;"></td>
-                </tr>
-            </table>
+                                <p>Kartların zimmetleneceği <strong>planner</strong> ismini bu e-posta yoluyla bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                    <tr>
+                                        <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">PLANNER</th>
+                                        <td style="border: 1px solid #d1d5db; padding: 12px;"></td>
+                                    </tr>
+                                </table>
         `;
     } else if (isPlanned) {
         html += `
-            <p>Alt tabloda belirtilen birimlere ait kartların kimlere zimmetleneceğini bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
-                <thead>
-                    <tr style="background-color: #E2001A; color: #fff;">
-                        <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">BİRİM</th>
-                        <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">ZİMMET ÇIKILACAK İSİM</th>
-                    </tr>
-                </thead>
-                <tbody>
+                                <p>Alt tabloda belirtilen birimlere ait kartların kimlere zimmetleneceğini bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold;">ZİMMET ÇIKILACAK İSİM</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
         `;
 
         const skills = [
@@ -350,49 +360,59 @@ function generateHTML() {
 
         skills.forEach(skill => {
             if (document.getElementById(skill.id).checked) {
-                html += `<tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold;">${skill.name}</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>`;
+                html += `<tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold; width: 1%; white-space: nowrap;">${skill.name}</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>`;
             }
         });
 
         html += `</tbody></table>`;
     } else if (isPeriodic) {
         html += `
-            <p>Periyodik bakım paketi olup, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
-                <thead>
-                    <tr style="background-color: #E2001A; color: #fff;">
-                        <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">BİRİM</th>
-                        <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">ZİMMET ÇIKILACAK İSİM</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>
-                </tbody>
-            </table>
+                                <p>Periyodik bakım paketi olup, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold;">ZİMMET ÇIKILACAK İSİM</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold; width: 1%; white-space: nowrap;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>
+                                    </tbody>
+                                </table>
         `;
     } else {
         html += `
-            <p>Bakım planı bulunmadığından, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
-                <thead>
-                    <tr style="background-color: #E2001A; color: #fff;">
-                        <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">BİRİM</th>
-                        <th style="border: 1px solid #d1d5db; padding: 12px; text-align: left;">ZİMMET ÇIKILACAK İSİM</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>
-                </tbody>
-            </table>
+                                <p>Bakım planı bulunmadığından, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold;">ZİMMET ÇIKILACAK İSİM</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold; width: 1%; white-space: nowrap;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>
+                                    </tbody>
+                                </table>
         `;
     }
 
     html += `
-            <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #d1d5db; font-size: 0.9em; color: #6c757d;">
-                <strong>BAKIM PLANLAMA ŞEFLİĞİ (SAW)</strong><br>
-                BAKIM HAZIRLIK BİRİMİ
-            </div>
-        </div>
+                                <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #d1d5db; font-size: 0.9em; color: #6c757d;">
+                                    <strong>BAKIM PLANLAMA ŞEFLİĞİ (SAW)</strong><br>
+                                    BAKIM HAZIRLIK BİRİMİ
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--[if mso]>
+                    </td>
+                    </tr>
+                    </table>
+                    <![endif]-->
+                </td>
+            </tr>
+        </table>
     `;
 
     return html;
