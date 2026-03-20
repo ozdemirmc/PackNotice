@@ -347,7 +347,7 @@ function generateHTML() {
 
     if (isPlannerMode) {
         html += `
-                                <p style="font-size: 14px; margin-bottom: 10px;">Kartların zimmetleneceği <strong>planner</strong> ismini bu e-posta yoluyla bildirmenizi rica ederiz.</p>
+                                <p style="font-size: 14px; margin-bottom: 10px;">Kartların zimmetleneceği <strong>planner sicili ve ismini</strong> bu e-posta yoluyla bildirmenizi rica ederiz.</p>
                                 <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <tr>
                                         <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">PLANNER</th>
@@ -362,7 +362,7 @@ function generateHTML() {
                                     <thead>
                                         <tr>
                                             <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
-                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -393,7 +393,7 @@ function generateHTML() {
                                     <thead>
                                         <tr>
                                             <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
-                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -408,7 +408,7 @@ function generateHTML() {
                                     <thead>
                                         <tr>
                                             <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
-                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
