@@ -334,10 +334,10 @@ function generateHTML() {
                     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 700px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; background-color: #ffffff; margin: 0 auto;">
                         <tr>
                             <td style="padding: 20px;">
-                                <p style="margin-top: 0;">Sayın İlgililer,</p>
-                                <p>Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
+                                <p style="margin-top: 0; font-size: 14px;">Sayın İlgililer,</p>
+                                <p style="font-size: 14px;">Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
                                 
-                                <div style="background-color: #f4f5f6; border-left: 4px solid #E2001A; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                                <div style="background-color: #f4f5f6; border-left: 4px solid #E2001A; padding: 10px 15px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; line-height: 1.5;">
                                     <strong>A/C:</strong> ${ac}<br>
                                     <strong>BAKIM ADI:</strong> ${bakim}<br>
                                     <strong>BAKIM GİRİŞ TARİHİ:</strong> ${date}<br>
@@ -347,22 +347,22 @@ function generateHTML() {
 
     if (isPlannerMode) {
         html += `
-                                <p>Kartların zimmetleneceği <strong>planner</strong> ismini bu e-posta yoluyla bildirmenizi rica ederiz.</p>
-                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Kartların zimmetleneceği <strong>planner</strong> ismini bu e-posta yoluyla bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <tr>
-                                        <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">PLANNER</th>
-                                        <td style="border: 1px solid #d1d5db; padding: 12px;"></td>
+                                        <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">PLANNER</th>
+                                        <td style="border: 1px solid #d1d5db; padding: 6px 10px;"></td>
                                     </tr>
                                 </table>
         `;
     } else if (isPlanned) {
         html += `
-                                <p>Alt tabloda belirtilen birimlere ait kartların kimlere zimmetleneceğini bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Alt tabloda belirtilen birimlere ait kartların kimlere zimmetleneceğini bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
-                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">BİRİM</th>
-                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold;">ZİMMET ÇIKILACAK İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -381,45 +381,45 @@ function generateHTML() {
 
         skills.forEach(skill => {
             if (document.getElementById(skill.id).checked) {
-                html += `<tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold; width: 1%; white-space: nowrap;">${skill.name}</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>`;
+                html += `<tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">${skill.name}</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;"></td></tr>`;
             }
         });
 
         html += `</tbody></table>`;
     } else if (isPeriodic) {
         html += `
-                                <p>Periyodik bakım paketi olup, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Periyodik bakım paketi olup, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
-                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">BİRİM</th>
-                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold;">ZİMMET ÇIKILACAK İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold; width: 1%; white-space: nowrap;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;"></td></tr>
                                     </tbody>
                                 </table>
         `;
     } else {
         html += `
-                                <p>Bakım planı bulunmadığından, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Bakım planı bulunmadığından, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
-                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold;">BİRİM</th>
-                                            <th style="border: 1px solid #d1d5db; padding: 12px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold;">ZİMMET ÇIKILACAK İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td style="border: 1px solid #d1d5db; padding: 12px; font-weight: bold; width: 1%; white-space: nowrap;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 12px;"></td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px;"></td></tr>
                                     </tbody>
                                 </table>
         `;
     }
 
     html += `
-                                <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #d1d5db; font-size: 0.9em; color: #6c757d;">
+                                <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #d1d5db; font-size: 12px; color: #6c757d; line-height: 1.4;">
                                     <strong>BAKIM PLANLAMA ŞEFLİĞİ (SAW)</strong><br>
                                     BAKIM HAZIRLIK BİRİMİ
                                 </div>
