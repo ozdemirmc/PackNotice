@@ -203,6 +203,7 @@ function initApp() {
             closeSidePanel();
             applyZimmetMode();
             updatePreview();
+            showAlert("Ayarlar başarıyla kaydedildi.", "✅ BAŞARILI");
         };
     }
 

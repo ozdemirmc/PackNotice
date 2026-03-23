@@ -83,7 +83,7 @@
       <bt:ShortStrings>
         <bt:String id="groupLabel" DefaultValue="PackNotice" />
         <bt:String id="paneButtonLabel" DefaultValue="PackNotice" />
-        <bt:String id="paneButtonTitle" DefaultValue="PPackNotice'i Aç" />
+        <bt:String id="paneButtonTitle" DefaultValue="PackNotice'i Aç" />
       </bt:ShortStrings>
       <bt:LongStrings>
         <bt:String id="paneButtonDescription" DefaultValue="Bakım paketleri için otomatik mail hazırlama aracını açar." />
