@@ -4,7 +4,7 @@
  */
 
 // Debugging log
-console.log("PackNotice: Script loading version 1.4...");
+console.log("PackNotice: Script loading version 1.5...");
 
 // Check if settings are available
 if (!window.PackSettings) {
@@ -191,6 +191,16 @@ function initApp() {
 
     if (btnSaveSettings) {
         btnSaveSettings.onclick = () => {
+            // BOŞ LİSTE KONTROLÜ
+            if (currentSettings.bay1To.length === 0 || currentSettings.bay2To.length === 0 || currentSettings.bay3To.length === 0) {
+                showAlert(
+                    "<b>TÜM BAY LİSTELERİNDE EN AZ 1 ALICI OLMALIDIR!</b><br><br>" +
+                    "LÜTFEN ALICI EKLEYİN VEYA <b style='color: var(--accent);'>VARSAYILANLARA DÖN</b>'Ü KULLANIN.",
+                    "⚠️ KAYIT BAŞARISIZ"
+                );
+                return;
+            }
+
             const newSettings = {
                 zimmetMode: document.getElementById('selZimmetMode').value,
                 bay1To: currentSettings.bay1To,
@@ -203,7 +213,7 @@ function initApp() {
             closeSidePanel();
             applyZimmetMode();
             updatePreview();
-            showAlert("Ayarlar başarıyla kaydedildi.", "✅ BAŞARILI");
+            showAlert("AYARLAR BAŞARIYLA KAYDEDİLDİ.", "✅ BAŞARILI");
         };
     }
 
@@ -364,7 +374,7 @@ function generateHTML() {
 
     // ACID: dolu ve periyodik değilse mail gövdesine ekle
     const acidValue = document.getElementById('txtAcid').value.toUpperCase().trim();
-    const acidLine = (acidValue && !isPeriodic) ? `<strong>ACID:</strong> ${acidValue}<br>` : '';
+    const acidLine = (acidValue && !isPeriodic) ? `<br><strong>ACID:</strong> ${acidValue}` : '';
 
     let html = `
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f5f7;">
@@ -426,7 +436,7 @@ function generateHTML() {
 
         skills.forEach(skill => {
             if (document.getElementById(skill.id).checked) {
-                html += `<tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">${skill.name}</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>`;
+                html += `<tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">${skill.name}</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important; font-size: 13px !important;">&nbsp;</td></tr>`;
             }
         });
 
@@ -442,7 +452,7 @@ function generateHTML() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important; font-size: 13px !important;">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
         `;
@@ -457,7 +467,7 @@ function generateHTML() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important; font-size: 13px !important;">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
         `;
@@ -546,10 +556,10 @@ async function prepareMail() {
     if (!item.from || typeof item.from.getAsync !== 'function') {
         console.warn("PackNotice: item.from.getAsync not available.");
         showAlert(
-            "<b>Gönderici adresi kontrol edilemiyor.</b><br><br>" +
-            "Lütfen mailin <b>'Kimden' (From)</b> alanından<br>" +
+            "<b>GÖNDERİCİ ADRESİ KONTROL EDİLEMİYOR.</b><br><br>" +
+            "LÜTFEN MAİLİN <b>'KİMDEN' (FROM)</b> ALANINDAN<br>" +
             "<b style='color: var(--accent);'>TT-UBB(SAW)-BAKIMHAZIRLIK</b><br>" +
-            "hesabının seçili olduğundan emin olun."
+            "HESABININ SEÇİLİ OLDUĞUNDAN EMİN OLUN."
         );
         return;
     }
