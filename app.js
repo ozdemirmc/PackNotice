@@ -234,7 +234,15 @@ function initApp() {
         };
     }
 
-    // Initialize UI (tarih boş başlar)
+    // Initialize UI
+    const dateInput = document.getElementById('dateInput');
+    if (dateInput) {
+        // Bugünden önceki tarihleri engelle (Türkiye yerel saati)
+        const today = new Date();
+        today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+        dateInput.min = today.toISOString().split('T')[0];
+    }
+
     applyZimmetMode();
     updatePreview();
 }
@@ -360,7 +368,16 @@ function generateHTML() {
             const d = new Date(year, month - 1, day);
             const dayName = days[d.getDay()];
 
-            date = `${day}.${month}.${year} ${dayName}`;
+            // Bugün mü kontrolü (saat dilimi güvenli)
+            const todayObj = new Date();
+            todayObj.setMinutes(todayObj.getMinutes() - todayObj.getTimezoneOffset());
+            const todayStr = todayObj.toISOString().split('T')[0];
+
+            if (dateRaw === todayStr) {
+                date = `${day}.${month}.${year} ${dayName} <span style="color: #E2001A; font-weight: 700;">(BUGÜN)</span>`;
+            } else {
+                date = `${day}.${month}.${year} ${dayName}`;
+            }
         } else {
             // Fallback: Eğer browser date inputu desteklemiyorsa ve kullanıcı farklı girdiys
             date = dateRaw;
@@ -475,8 +492,8 @@ function generateHTML() {
 
     html += `
                                 <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #d1d5db; font-size: 12px; color: #6c757d; line-height: 1.4;">
-                                    <strong>BAKIM PLANLAMA ŞEFLİĞİ (SAW)</strong><br>
-                                    BAKIM HAZIRLIK BİRİMİ
+                                    <strong>BAKIM MÜHENDİSLİK VE PLANLAMA MÜDÜRLÜĞÜ</strong><br>
+                                    BAKIM PLANLAMA ŞEFLİĞİ (SAW)
                                 </div>
                             </td>
                         </tr>
@@ -540,6 +557,18 @@ async function prepareMail() {
 
     if (!ac || !bakim || !dateRaw) {
         showAlert("<b style='color: var(--accent);'>A/C</b>, <b style='color: var(--accent);'>BAKIM ADI</b> VE <b style='color: var(--accent);'>TARİH</b> ALANLARI BOŞ BIRAKILAMAZ!");
+        return;
+    }
+
+    // A/C format kontrolü: tire (-) içermeli (örn. TC-ABC)
+    if (!ac.includes('-')) {
+        showAlert(
+            "<b>UÇAK TESCİL KODU (A/C) HATALI GÖRÜNÜYOR.</b><br><br>" +
+            "GİRDİĞİNİZ DEĞER: <b style='color: var(--accent);'>" + ac + "</b><br><br>" +
+            "TESCİL KODUNUN TİRE (-) İÇERMESİ GEREKİR.<br>" +
+            "ÖRNEK: <b>TC-ABC</b>",
+            "⚠️ FORMAT UYARISI"
+        );
         return;
     }
 
