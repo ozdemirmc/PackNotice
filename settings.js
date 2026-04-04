@@ -1,16 +1,16 @@
 /**
- * Settings management for PackMaillerWEB
+ * Settings management for PackNotice
  * Uses localStorage to persist user configurations.
  */
 
-const SETTINGS_KEY = 'PackMaillerSettings';
+const SETTINGS_KEY = 'PackNoticeSettings';
 
 const DefaultSettings = {
     zimmetMode: 'BIRIM', // 'BIRIM' or 'PLANNER'
     bay1To: ['tt-ubbsaw-bay1planner@thy.com', 'ttubbsawbay1yoneticipersonel@thy.com'],
     bay2To: ['ttubbsawbay2planner@thy.com', 'ttubbsawbay2yoneticipersonel@thy.com'],
     bay3To: ['ttubbsawbay3planner@thy.com', 'ttubbsawbay3yoneticipersonel@thy.com'],
-    cc: ['ttubbsawpakethazirlik@thy.com']
+    cc: ['ttubbsawpakethazirlik@thy.com', 'ttubbsawbakimplanlama@thy.com']
 };
 
 function loadSettings() {
@@ -39,5 +39,9 @@ function saveSettings(settings) {
 // Global accessor
 window.PackSettings = {
     get: loadSettings,
-    save: saveSettings
+    save: saveSettings,
+    reset: () => {
+        localStorage.removeItem(SETTINGS_KEY);
+        return DefaultSettings;
+    }
 };

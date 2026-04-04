@@ -1,14 +1,14 @@
 /**
- * Main application logic for PackMaillerWEB
+ * Main application logic for PackNotice
  * Ported from VSTO C# implementation.
  */
 
 // Debugging log
-console.log("PackNotice: Script loading version 1.5...");
+console.log("PackNotice: Script loading version 1.4...");
 
 // Check if settings are available
 if (!window.PackSettings) {
-    console.error("PackMaillerWEB: settings.js not loaded or PackSettings missing!");
+    console.error("PackNotice: settings.js not loaded or PackSettings missing!");
 }
 
 let currentSettings = window.PackSettings ? window.PackSettings.get() : { zimmetMode: 'BIRIM' };
@@ -16,30 +16,30 @@ const targetAddress = "TTUBBSAWPAKETHAZIRLIK@THY.COM";
 
 // Ultra-defensive Office initialization
 function startApp() {
-    console.log("PackMaillerWEB: Starting app logic...");
+    console.log("PackNotice: Starting app logic...");
     initApp();
 }
 
 // Office context initialization
 if (typeof Office !== 'undefined') {
     Office.onReady(function (info) {
-        console.log("PackMaillerWEB: Office.js ready check.");
+        console.log("PackNotice: Office.js ready check.");
         if (info && info.host) {
-            console.log("PackMaillerWEB: Running inside host: " + info.host);
+            console.log("PackNotice: Running inside host: " + info.host);
 
             // Gönderici adresini periyodik olarak kontrol et ve uyarı göster
             setTimeout(checkFromAddress, 500);
             setInterval(checkFromAddress, 5000);
         } else {
-            console.log("PackMaillerWEB: Running in standalone browser mode.");
+            console.log("PackNotice: Running in standalone browser mode.");
         }
         startApp();
     }).catch(function (err) {
-        console.error("PackMaillerWEB: Office.onReady failed, starting anyway.", err);
+        console.error("PackNotice: Office.onReady failed, starting anyway.", err);
         startApp();
     });
 } else {
-    console.warn("PackMaillerWEB: Office.js script tag not found or failed to load.");
+    console.warn("PackNotice: Office.js script tag not found or failed to load.");
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', startApp);
     } else {
@@ -78,7 +78,7 @@ async function checkFromAddress() {
             });
         }
     } catch (err) {
-        console.warn("PackMaillerWEB: From address check failed", err);
+        console.warn("PackNotice: From address check failed", err);
     }
 }
 
@@ -93,6 +93,10 @@ function initApp() {
     const sidePanelTitle = document.getElementById('sidePanelTitle');
     const panelSettings = document.getElementById('panelSettings');
     const panelAbout = document.getElementById('panelAbout');
+    const btnResetSettings = document.getElementById('btnResetSettings');
+    const confirmOverlay = document.getElementById('confirmOverlay');
+    const btnConfirmYes = document.getElementById('btnConfirmYes');
+    const btnConfirmNo = document.getElementById('btnConfirmNo');
 
     // Yan panel aç/kapat fonksiyonları
     window.openSidePanel = function (view) {
@@ -124,6 +128,13 @@ function initApp() {
     if (btnAlertOk) {
         btnAlertOk.onclick = () => {
             if (alertOverlay) alertOverlay.classList.add('hidden');
+        };
+    }
+
+    // Onay modali kapatma (İptal)
+    if (btnConfirmNo) {
+        btnConfirmNo.onclick = () => {
+            if (confirmOverlay) confirmOverlay.classList.add('hidden');
         };
     }
 
@@ -192,25 +203,45 @@ function initApp() {
             closeSidePanel();
             applyZimmetMode();
             updatePreview();
+            showAlert("Ayarlar başarıyla kaydedildi.", "✅ BAŞARILI");
+        };
+    }
+
+    if (btnResetSettings) {
+        btnResetSettings.onclick = () => {
+            showConfirm(
+                "ÖZELLEŞTİRDİĞİNİZ GÖNDERİ ADRESLERİ VARSAYILAN AYARLARA DÖNDÜRÜLECEK.<br><br>DEVAM ETMEK İSTİYOR MUSUNUZ?",
+                () => {
+                    const defaulted = window.PackSettings.reset();
+                    currentSettings = defaulted;
+                    loadSettingsToUI();
+                    applyZimmetMode();
+                    updatePreview();
+                    if (confirmOverlay) confirmOverlay.classList.add('hidden');
+                    console.log("Settings reset to defaults.");
+                }
+            );
         };
     }
 
     // Initialize UI (tarih boş başlar)
-    const dateInput = document.getElementById('dateInput');
-    if (dateInput) {
-        // Bugünden önceki tarihleri engelle
-        const today = new Date();
-        // Türkiye yerel saatiyle bugünü bul (UTC farklılıklarını gidermek için)
-        today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
-        dateInput.min = today.toISOString().split('T')[0];
-    }
-
     applyZimmetMode();
     updatePreview();
 }
 
 function handleTypeChange(type) {
     const isPlanned = type === 'planned';
+
+    // ACID alanını periyodik bakımda gizle
+    const acidContainer = document.getElementById('acidContainer');
+    if (acidContainer) {
+        if (type === 'periodic') {
+            acidContainer.classList.add('hidden');
+            document.getElementById('txtAcid').value = '';
+        } else {
+            acidContainer.classList.remove('hidden');
+        }
+    }
     const skillChecks = document.querySelectorAll('#skillGrid input');
     if (currentSettings.zimmetMode === 'PLANNER') return;
 
@@ -305,24 +336,23 @@ function generateHTML() {
     const dateRaw = document.getElementById('dateInput').value;
     let date = '';
     if (dateRaw) {
+        // input type="date" her zaman YYYY-MM-DD döner. 
+        // new Date(dateRaw) her zaman güvenilir değildir (saat dilimi kayması gibi).
+        // Doğrudan string operasyonu daha güvenlidir.
         const parts = dateRaw.split('-');
         if (parts.length === 3) {
             const year = parts[0];
             const month = parts[1];
             const day = parts[2];
+
+            // Gün ismini hesaplama (Güvenli yöntem)
             const days = ['PAZAR', 'PAZARTESİ', 'SALI', 'ÇARŞAMBA', 'PERŞEMBE', 'CUMA', 'CUMARTESİ'];
             const d = new Date(year, month - 1, day);
             const dayName = days[d.getDay()];
-            const todayObj = new Date();
-            todayObj.setMinutes(todayObj.getMinutes() - todayObj.getTimezoneOffset());
-            const todayStr = todayObj.toISOString().split('T')[0];
-            
-            if (dateRaw === todayStr) {
-                date = `${day}.${month}.${year} ${dayName} <span style="color: #E2001A; font-weight: 700;">(BUGÜN)</span>`;
-            } else {
-                date = `${day}.${month}.${year} ${dayName}`;
-            }
+
+            date = `${day}.${month}.${year} ${dayName}`;
         } else {
+            // Fallback: Eğer browser date inputu desteklemiyorsa ve kullanıcı farklı girdiys
             date = dateRaw;
         }
     }
@@ -331,6 +361,10 @@ function generateHTML() {
     const isPlanned = typeValue === 'planned';
     const isPeriodic = typeValue === 'periodic';
     const isPlannerMode = currentSettings.zimmetMode === 'PLANNER';
+
+    // ACID: dolu ve periyodik değilse mail gövdesine ekle
+    const acidValue = document.getElementById('txtAcid').value.toUpperCase().trim();
+    const acidLine = (acidValue && !isPeriodic) ? `<strong>ACID:</strong> ${acidValue}<br>` : '';
 
     let html = `
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f5f7;">
@@ -341,38 +375,39 @@ function generateHTML() {
                     <tr>
                     <td align="center" valign="top" width="650">
                     <![endif]-->
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: #334155; line-height: 1.6; text-align: left; margin: 0 auto;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; background-color: #ffffff; margin: 0 auto;">
                         <tr>
-                            <td style="padding: 30px;">
-                                <p style="margin: 0 0 15px 0; font-size: 15px;">Sayın İlgililer,</p>
-                                <p style="margin: 0 0 20px 0; font-size: 15px;">Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
+                            <td style="padding: 20px;">
+                                <p style="margin-top: 0; font-size: 14px;">Sayın İlgililer,</p>
+                                <p style="font-size: 14px;">Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
                                 
-                                <div style="background-color: #f8fafc; border-left: 4px solid #E2001A; padding: 15px 20px; border-radius: 4px; margin-bottom: 25px; font-size: 14px; color: #0f172a;">
-                                    <strong style="color: #475569;">A/C:</strong> ${ac}<br>
-                                    <strong style="color: #475569;">BAKIM ADI:</strong> ${bakim}<br>
-                                    <strong style="color: #475569;">BAKIM GİRİŞ TARİHİ:</strong> ${date}<br>
-                                    <strong style="color: #475569;">BAKIM PLANI:</strong> ${bakimPlaniText}
+                                <div style="background-color: #f4f5f6; border-left: 4px solid #E2001A; padding: 10px 15px; border-radius: 5px; margin-bottom: 15px; font-size: 13px; line-height: 1.5;">
+                                    <strong>A/C:</strong> ${ac}<br>
+                                    <strong>BAKIM ADI:</strong> ${bakim}<br>
+                                    <strong>BAKIM GİRİŞ TARİHİ:</strong> ${date}<br>
+                                    <strong>BAKIM PLANI:</strong> ${bakimPlaniText}
+                                    ${acidLine}
                                 </div>
     `;
 
     if (isPlannerMode) {
         html += `
-                                <p style="margin: 0 0 15px 0; font-size: 15px;">Kartların zimmetleneceği <strong>planner sicili ve ismini</strong> bu e-posta yoluyla bildirmenizi rica ederiz.</p>
-                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; margin-bottom: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Kartların zimmetleneceği <strong>planner sicili ve ismini</strong> bu e-posta yoluyla bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <tr>
-                                        <th valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #E2001A; color: #ffffff; text-align: left; width: 120px; font-weight: bold; font-size: 14px; vertical-align: middle;">PLANNER</th>
-                                        <td valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #f8fafc; vertical-align: middle;">&nbsp;</td>
+                                        <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">PLANNER</th>
+                                        <td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td>
                                     </tr>
                                 </table>
         `;
     } else if (isPlanned) {
         html += `
-                                <p style="margin: 0 0 15px 0; font-size: 15px;">Alt tabloda belirtilen birimlere ait kartların kimlere zimmetleneceğini bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; margin-bottom: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Alt tabloda belirtilen birimlere ait kartların kimlere zimmetleneceğini bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
-                                            <th valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #E2001A; color: #ffffff; text-align: left; width: 120px; font-weight: bold; font-size: 14px; vertical-align: middle;">BİRİM</th>
-                                            <th valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 14px; vertical-align: middle;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -391,47 +426,47 @@ function generateHTML() {
 
         skills.forEach(skill => {
             if (document.getElementById(skill.id).checked) {
-                html += `<tr><td valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; font-weight: bold; font-size: 13px; color: #0f172a; background-color: #f8fafc; vertical-align: middle;">${skill.name}</td><td valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; vertical-align: middle;">&nbsp;</td></tr>`;
+                html += `<tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">${skill.name}</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>`;
             }
         });
 
         html += `</tbody></table>`;
     } else if (isPeriodic) {
         html += `
-                                <p style="margin: 0 0 15px 0; font-size: 15px;">Periyodik bakım paketi olup, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; margin-bottom: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Periyodik bakım paketi olup, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
-                                            <th valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #E2001A; color: #ffffff; text-align: left; width: 120px; font-weight: bold; font-size: 14px; vertical-align: middle;">BİRİM</th>
-                                            <th valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 14px; vertical-align: middle;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; font-weight: bold; font-size: 13px; color: #0f172a; background-color: #f8fafc; vertical-align: middle;">MEKANİK</td><td valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; vertical-align: middle;">&nbsp;</td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
         `;
     } else {
         html += `
-                                <p style="margin: 0 0 15px 0; font-size: 15px;">Bakım planı bulunmadığından, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse; margin-bottom: 15px;">
+                                <p style="font-size: 14px; margin-bottom: 10px;">Bakım planı bulunmadığından, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
-                                            <th valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #E2001A; color: #ffffff; text-align: left; width: 120px; font-weight: bold; font-size: 14px; vertical-align: middle;">BİRİM</th>
-                                            <th valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 14px; vertical-align: middle;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
+                                            <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; font-weight: bold; font-size: 13px;">ZİMMET ÇIKILACAK SİCİL - İSİM</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr><td valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; font-weight: bold; font-size: 13px; color: #0f172a; background-color: #f8fafc; vertical-align: middle;">MEKANİK</td><td valign="middle" style="border: 1px solid #e2e8f0; padding: 10px 15px; vertical-align: middle;">&nbsp;</td></tr>
+                                        <tr><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: bold; width: 1%; white-space: nowrap; font-size: 13px;">MEKANİK</td><td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td></tr>
                                     </tbody>
                                 </table>
         `;
     }
 
     html += `
-                                <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 13px; color: #64748b; line-height: 1.5;">
-                                    <strong>BAKIM MÜHENDİSLİK VE PLANLAMA MÜDÜRLÜĞÜ</strong><br>
-                                    BAKIM PLANLAMA ŞEFLİĞİ (SAW)
+                                <div style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #d1d5db; font-size: 12px; color: #6c757d; line-height: 1.4;">
+                                    <strong>BAKIM PLANLAMA ŞEFLİĞİ (SAW)</strong><br>
+                                    BAKIM HAZIRLIK BİRİMİ
                                 </div>
                             </td>
                         </tr>
@@ -456,7 +491,7 @@ function updatePreview() {
             preview.innerHTML = generateHTML();
         }
     } catch (err) {
-        console.error("PackMaillerWEB: Önizleme güncellenemedi", err);
+        console.error("PackNotice: Önizleme güncellenemedi", err);
     }
 }
 
@@ -471,7 +506,20 @@ function showAlert(message, title) {
         overlay.classList.remove('hidden');
     } else {
         // Fallback: konsola yaz
-        console.error("PackMaillerWEB UYARI:", message);
+        console.error("PackNotice UYARI:", message);
+    }
+}
+
+// Onay modali göster
+function showConfirm(message, onYes) {
+    const overlay = document.getElementById('confirmOverlay');
+    const msgEl = document.getElementById('confirmMessage');
+    const btnYes = document.getElementById('btnConfirmYes');
+
+    if (overlay && msgEl && btnYes) {
+        msgEl.innerHTML = message;
+        btnYes.onclick = onYes;
+        overlay.classList.remove('hidden');
     }
 }
 
@@ -487,7 +535,7 @@ async function prepareMail() {
 
     // Office konteksti yoksa engelle
     if (typeof Office === 'undefined' || !Office.context || !Office.context.mailbox || !Office.context.mailbox.item) {
-        console.warn("PackMaillerWEB: Office context not available.");
+        console.warn("PackNotice: Office context not available.");
         showAlert("OUTLOOK BAĞLANTISI KURULAMADI.<br>EKLENTİYİ OUTLOOK İÇİNDEN AÇTIĞINIZDAN EMİN OLUN.");
         return;
     }
@@ -496,7 +544,7 @@ async function prepareMail() {
 
     // from.getAsync yoksa da engelle
     if (!item.from || typeof item.from.getAsync !== 'function') {
-        console.warn("PackMaillerWEB: item.from.getAsync not available.");
+        console.warn("PackNotice: item.from.getAsync not available.");
         showAlert(
             "<b>Gönderici adresi kontrol edilemiyor.</b><br><br>" +
             "Lütfen mailin <b>'Kimden' (From)</b> alanından<br>" +
@@ -510,7 +558,7 @@ async function prepareMail() {
     item.from.getAsync(function (result) {
         if (result.status === Office.AsyncResultStatus.Succeeded) {
             const currentFrom = (result.value.emailAddress || "").toUpperCase();
-            console.log("PackMaillerWEB: prepareMail check - current From:", currentFrom);
+            console.log("PackNotice: prepareMail check - current From:", currentFrom);
 
             if (currentFrom !== targetAddress) {
                 // Gönderici adresi yanlış - mail hazırlamayı engelle
@@ -521,7 +569,7 @@ async function prepareMail() {
                     "<b style='color: var(--accent);'>TT-UBB(SAW)-BAKIMHAZIRLIK</b><br>" +
                     "HESABINI SEÇİN VE TEKRAR DENEYİN."
                 );
-                console.warn("PackMaillerWEB: Preparation blocked - wrong sender: " + currentFrom);
+                console.warn("PackNotice: Preparation blocked - wrong sender: " + currentFrom);
                 return;
             }
 
@@ -535,7 +583,7 @@ async function prepareMail() {
                 "<b style='color: var(--accent);'>TT-UBB(SAW)-BAKIMHAZIRLIK</b><br>" +
                 "HESABININ SEÇİLİ OLDUĞUNDAN EMİN OLUN."
             );
-            console.error("PackMaillerWEB: from.getAsync failed:", result.error ? result.error.message : "unknown");
+            console.error("PackNotice: from.getAsync failed:", result.error ? result.error.message : "unknown");
         }
     });
 }

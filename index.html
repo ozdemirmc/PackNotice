@@ -46,6 +46,9 @@
                 <div class="input-field"><label>BAKIM GİRİŞ TARİHİ</label><input type="date" id="dateInput" lang="tr"
                         placeholder="GG.AA.YYYY">
                 </div>
+                <div class="input-field" id="acidContainer">
+                    <label>ACID</label><input type="text" id="txtAcid" placeholder="925743">
+                </div>
             </section>
 
             <section id="skillSection" class="section">
@@ -85,7 +88,7 @@
             </div>
         </main>
 
-        <div id="alertOverlay" class="overlay hidden">
+        <div id="alertOverlay" class="overlay hidden" style="z-index: 9999 !important;">
             <div class="modal" style="text-align: center;">
                 <header class="modal-header" style="background: var(--accent);">
                     <h2 id="alertTitle" style="font-size: 11px; margin: 0; width: 100%;">⚠️ GÖNDEREN HESAP SEÇİMİ
@@ -95,6 +98,23 @@
                     <p id="alertMessage" style="font-size: 11px; line-height: 1.6; margin: 0;"></p>
                     <button id="btnAlertOk" class="primary-button"
                         style="margin-top: 10px; background: var(--accent);">TAMAM</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="confirmOverlay" class="overlay hidden" style="z-index: 9999 !important;">
+            <div class="modal" style="text-align: center;">
+                <header class="modal-header" style="background: #6c757d;">
+                    <h2 style="font-size: 11px; margin: 0; width: 100%;">❓ ONAY</h2>
+                </header>
+                <div class="modal-body" style="padding: 16px;">
+                    <p id="confirmMessage" style="font-size: 11px; line-height: 1.6; margin: 0;"></p>
+                    <div style="display: flex; gap: 8px; margin-top: 15px;">
+                        <button id="btnConfirmYes" class="primary-button"
+                            style="background: var(--accent); flex: 1;">EVET</button>
+                        <button id="btnConfirmNo" class="primary-button"
+                            style="background: #6c757d; flex: 1;">HAYIR</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,7 +168,9 @@
                         <button class="add-btn" onclick="addEmailFromUI('cc','inCc')">+</button>
                     </div>
                 </div>
-                <button id="btnSaveSettings" class="primary-button" style="background: var(--accent);">KAYDET</button>
+                <button id="btnSaveSettings" class="primary-button" style="background: var(--accent);">GÜNCELLE</button>
+                <button id="btnResetSettings" class="primary-button"
+                    style="background: #6c757d; margin-top: 8px;">VARSAYILANLARA DÖN</button>
             </div>
 
             <!-- HAKKINDA İçeriği -->
@@ -157,14 +179,19 @@
                     <img src="assets/PMTHY.png"
                         style="width: 48px; height: 48px; border-radius: 8px; margin-bottom: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                     <br><b style="font-size: 13px;">PackNotice</b><br>
-                    <span style="font-size: 9px; color: var(--text-muted);">v1.5</span>
+                    <span style="font-size: 9px; color: var(--text-muted);">v1.4</span>
                     <div style="margin-top: 16px; font-size: 10px; line-height: 1.6; color: var(--text-muted);">
-                        BAKIM PAKETLERİ BİLDİRİMİ İÇİN<br>MODERN MAİL HAZIRLAMA ARACI
+                        BAKIM PAKETLERİ İÇİN<br>MAİL HAZIRLAMA ARACI
                     </div>
                     <div
                         style="margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 9px; color: var(--text-muted); line-height: 1.5;">
                         BAKIM PLANLAMA ŞEFLİĞİ (SAW)<br>
-                        BAKIM HAZIRLIK BİRİMİ TARAFINDAN GELİŞTİRİLMİŞTİR
+                        BAKIM HAZIRLIK BİRİMİ TARAFINDAN GELİŞTİRİLMİŞTİR<br><br>
+                        DESTEK VE ÖNERİLERİNİZ İÇİN<br>
+                        <a href="mailto:TTUBBSAWPAKETHAZIRLIK@THY.COM"
+                            style="color: var(--accent); text-decoration: none; font-weight: bold;">BAKIM HAZIRLIK
+                            (SAW)</a><br>
+                        İLE İLETİŞİME GEÇEBİLİRSİNİZ.
                     </div>
                 </div>
             </div>

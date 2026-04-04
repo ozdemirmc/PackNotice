@@ -5,16 +5,16 @@
            xmlns:mailappor="http://schemas.microsoft.com/office/mailappversionoverrides" 
            xsi:type="MailApp">
   <Id>d2c3e1b0-4a6a-4f1a-9f1a-b61b40ba8ba8</Id>
-  <Version>1.2.0.0</Version>
+  <Version>1.5.0.0</Version>
   <ProviderName>THY</ProviderName>
   <DefaultLocale>tr-TR</DefaultLocale>
   <DisplayName DefaultValue="PackNotice" />
   <Description DefaultValue="Bakım paketleri için mail hazırlama aracı." />
-  <IconUrl DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
-  <HighResolutionIconUrl DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
+  <IconUrl DefaultValue="https://ozdemirmc.github.io/PackNotice/assets/PMTHY.png" />
+  <HighResolutionIconUrl DefaultValue="https://ozdemirmc.github.io/PackNotice/assets/PMTHY.png" />
   <SupportUrl DefaultValue="https://www.turkishairlines.com" />
   <AppDomains>
-    <AppDomain>https://ozdemirmc.github.io/PackMaillerWEB</AppDomain>
+    <AppDomain>https://ozdemirmc.github.io/PackNotice</AppDomain>
   </AppDomains>
   <Hosts>
     <Host Name="Mailbox" />
@@ -27,7 +27,7 @@
   <FormSettings>
     <Form xsi:type="ItemEdit">
       <DesktopSettings>
-        <SourceLocation DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/index.html" />
+        <SourceLocation DefaultValue="https://ozdemirmc.github.io/PackNotice/index.html" />
       </DesktopSettings>
     </Form>
   </FormSettings>
@@ -73,20 +73,20 @@
     </Hosts>
     <Resources>
       <bt:Images>
-        <bt:Image id="icon16" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
-        <bt:Image id="icon32" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
-        <bt:Image id="icon80" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/assets/PMTHY.png" />
+        <bt:Image id="icon16" DefaultValue="https://ozdemirmc.github.io/PackNotice/assets/PMTHY.png" />
+        <bt:Image id="icon32" DefaultValue="https://ozdemirmc.github.io/PackNotice/assets/PMTHY.png" />
+        <bt:Image id="icon80" DefaultValue="https://ozdemirmc.github.io/PackNotice/assets/PMTHY.png" />
       </bt:Images>
       <bt:Urls>
-        <bt:Url id="taskpaneUrl" DefaultValue="https://ozdemirmc.github.io/PackMaillerWEB/index.html" />
+        <bt:Url id="taskpaneUrl" DefaultValue="https://ozdemirmc.github.io/PackNotice/index.html" />
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="groupLabel" DefaultValue="PAKET HAZIRLIK" />
-        <bt:String id="paneButtonLabel" DefaultValue="PAKET HAZIR" />
-        <bt:String id="paneButtonTitle" DefaultValue="Paket Hazır'ı Aç" />
+        <bt:String id="groupLabel" DefaultValue="PackNotice" />
+        <bt:String id="paneButtonLabel" DefaultValue="PackNotice" />
+        <bt:String id="paneButtonTitle" DefaultValue="PackNotice'i Aç" />
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="paneButtonDescription" DefaultValue="Bakım paketleri için otomatik mail hazırlama aracını açar." />
+        <bt:String id="paneButtonDescription" DefaultValue="Basılıp hazır edilen bakım paketleri için kurumsal formatta otomatik mail hazırlama aracını açar." />
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>
