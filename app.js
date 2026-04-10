@@ -397,19 +397,14 @@ function generateHTML() {
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f5f7;">
             <tr>
                 <td align="center" style="padding: 40px 15px;">
-                    <!--[if !mso]><!-->
-                    <div style="max-width: 650px; border: 1px solid #d1d5db; border-radius: 8px; background-color: #ffffff; margin: 0 auto; overflow: hidden;">
-                    <!--<![endif]-->
                     <!--[if mso]>
-                    <table align="center" border="0" cellspacing="0" cellpadding="0" width="650" bgcolor="#ffffff">
+                    <table align="center" border="0" cellspacing="0" cellpadding="0" width="650">
                     <tr>
-                    <td align="center" valign="top" width="650" style="border: 1px solid #d1d5db; padding: 20px;">
+                    <td align="center" valign="top" width="650">
                     <![endif]-->
-                    <!--[if !mso]><!-->
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; background-color: #ffffff; margin: 0 auto;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; border: 1px solid #d1d5db; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; background-color: #ffffff; margin: 0 auto; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 20px;">
-                    <!--<![endif]-->
                                 <p style="margin-top: 0; font-size: 14px;">Sayın İlgililer,</p>
                                 <p style="font-size: 14px;">Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
                                 
@@ -500,11 +495,9 @@ function generateHTML() {
                                     <strong>BAKIM MÜHENDİSLİK VE PLANLAMA MÜDÜRLÜĞÜ</strong><br>
                                     BAKIM PLANLAMA ŞEFLİĞİ (SAW)
                                 </div>
-                    <!--[if !mso]><!-->
                             </td>
                         </tr>
                     </table>
-                    <!--<![endif]-->
                     <!--[if mso]>
                     </td>
                     </tr>
