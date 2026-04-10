@@ -398,7 +398,7 @@ function generateHTML() {
             <tr>
                 <td align="center" style="padding: 40px 15px;">
                     <!--[if mso]>
-                    <table align="center" border="0" cellspacing="0" cellpadding="0" width="650">
+                    <table align="center" border="0" cellspacing="0" cellpadding="0" width="650" style="border: 1px solid #d1d5db; background-color: #ffffff;">
                     <tr>
                     <td align="center" valign="top" width="650">
                     <![endif]-->
@@ -420,7 +420,7 @@ function generateHTML() {
     if (isPlannerMode) {
         html += `
                                 <p style="font-size: 14px; margin-bottom: 10px;">Kartların zimmetleneceği <strong>planner sicili ve ismini</strong> bu e-posta yoluyla bildirmenizi rica ederiz.</p>
-                                <table width="99%" style="border-collapse: collapse; margin-top: 5px;">
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <tr>
                                         <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">PLANNER</th>
                                         <td style="border: 1px solid #d1d5db; padding: 6px 10px; font-weight: 400 !important; font-style: normal !important; font-family: 'Segoe UI', Tahoma, sans-serif !important;">&nbsp;</td>
@@ -430,7 +430,7 @@ function generateHTML() {
     } else if (isPlanned) {
         html += `
                                 <p style="font-size: 14px; margin-bottom: 10px;">Alt tabloda belirtilen birimlere ait kartların kimlere zimmetleneceğini bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table width="99%" style="border-collapse: collapse; margin-top: 5px;">
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
                                             <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
@@ -461,7 +461,7 @@ function generateHTML() {
     } else if (isPeriodic) {
         html += `
                                 <p style="font-size: 14px; margin-bottom: 10px;">Periyodik bakım paketi olup, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table width="99%" style="border-collapse: collapse; margin-top: 5px;">
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
                                             <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
@@ -476,7 +476,7 @@ function generateHTML() {
     } else {
         html += `
                                 <p style="font-size: 14px; margin-bottom: 10px;">Bakım planı bulunmadığından, paket içeriğinin tamamı tek bir isim üzerine zimmetlenecektir. Kartların kime zimmetleneceğini tabloya işleyerek bu e-posta üzerinden bildirmenizi rica ederiz.</p>
-                                <table width="99%" style="border-collapse: collapse; margin-top: 5px;">
+                                <table style="width: 100%; border-collapse: collapse; margin-top: 5px;">
                                     <thead>
                                         <tr>
                                             <th style="border: 1px solid #d1d5db; padding: 6px 10px; background-color: #E2001A; color: #ffffff; text-align: left; width: 1%; white-space: nowrap; font-weight: bold; font-size: 13px;">BİRİM</th>
