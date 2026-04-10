@@ -401,13 +401,15 @@ function generateHTML() {
                     <div style="max-width: 650px; border: 1px solid #d1d5db; border-radius: 8px; background-color: #ffffff; margin: 0 auto; overflow: hidden;">
                     <!--<![endif]-->
                     <!--[if mso]>
-                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" arcsize="2%" strokecolor="#d1d5db" fillcolor="#ffffff" style="width:650px;">
-                    <w:anchorlock/>
-                    <v:textbox inset="0,0,0,0">
+                    <table align="center" border="0" cellspacing="0" cellpadding="0" width="650" bgcolor="#ffffff">
+                    <tr>
+                    <td align="center" valign="top" width="650" style="border: 1px solid #d1d5db; padding: 20px;">
                     <![endif]-->
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; margin: 0 auto;">
+                    <!--[if !mso]><!-->
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; background-color: #ffffff; margin: 0 auto;">
                         <tr>
                             <td style="padding: 20px;">
+                    <!--<![endif]-->
                                 <p style="margin-top: 0; font-size: 14px;">Sayın İlgililer,</p>
                                 <p style="font-size: 14px;">Aşağıda bilgileri bulunan bakım paketi hazır olup <strong>BMPM</strong> ofisinden teslim alınabilir.</p>
                                 
@@ -498,16 +500,16 @@ function generateHTML() {
                                     <strong>BAKIM MÜHENDİSLİK VE PLANLAMA MÜDÜRLÜĞÜ</strong><br>
                                     BAKIM PLANLAMA ŞEFLİĞİ (SAW)
                                 </div>
+                    <!--[if !mso]><!-->
                             </td>
                         </tr>
                     </table>
-                    <!--[if mso]>
-                    </v:textbox>
-                    </v:roundrect>
-                    <![endif]-->
-                    <!--[if !mso]><!-->
-                    </div>
                     <!--<![endif]-->
+                    <!--[if mso]>
+                    </td>
+                    </tr>
+                    </table>
+                    <![endif]-->
                 </td>
             </tr>
         </table>
