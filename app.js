@@ -397,12 +397,15 @@ function generateHTML() {
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f4f5f7;">
             <tr>
                 <td align="center" style="padding: 40px 15px;">
+                    <!--[if !mso]><!-->
+                    <div style="max-width: 650px; border: 1px solid #d1d5db; border-radius: 8px; background-color: #ffffff; margin: 0 auto; overflow: hidden;">
+                    <!--<![endif]-->
                     <!--[if mso]>
-                    <table align="center" border="0" cellspacing="0" cellpadding="0" width="650" style="border: 1px solid #d1d5db; background-color: #ffffff;">
-                    <tr>
-                    <td align="center" valign="top" width="650">
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" arcsize="2%" strokecolor="#d1d5db" fillcolor="#ffffff" style="width:650px;">
+                    <w:anchorlock/>
+                    <v:textbox inset="0,0,0,0">
                     <![endif]-->
-                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; border: 1px solid #d1d5db; border-radius: 8px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; background-color: #ffffff; margin: 0 auto;">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 650px; font-family: 'Segoe UI', Tahoma, sans-serif; color: #000000; line-height: 1.6; text-align: left; margin: 0 auto;">
                         <tr>
                             <td style="padding: 20px;">
                                 <p style="margin-top: 0; font-size: 14px;">Sayın İlgililer,</p>
@@ -499,10 +502,12 @@ function generateHTML() {
                         </tr>
                     </table>
                     <!--[if mso]>
-                    </td>
-                    </tr>
-                    </table>
+                    </v:textbox>
+                    </v:roundrect>
                     <![endif]-->
+                    <!--[if !mso]><!-->
+                    </div>
+                    <!--<![endif]-->
                 </td>
             </tr>
         </table>
